@@ -1,4 +1,13 @@
 ### GET request to first endpoint
 GET http://127.0.0.1:8000/api/company_details/
 
+### Запрос на добавление комментария к забегу для конкретного пользователя
+POST http://127.0.0.1:8000/api/runs/
+Content-Type: application/json
+
+{
+  "comment": "Удачный забег и отправка запроса для проверки API у Юлии",
+  "athlete": 2
+}
+
 ###
