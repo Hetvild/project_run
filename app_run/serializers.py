@@ -11,6 +11,9 @@ class RunSerializer(serializers.ModelSerializer):
 
 
 class CouchAthleteSerializer(serializers.ModelSerializer):
+    # Определяем вычисляемое поле для вывода типа пользователя
+    type = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
@@ -21,4 +24,11 @@ class CouchAthleteSerializer(serializers.ModelSerializer):
             "email",
             "is_staff",
             "is_superuser",
+            "type",
         )
+
+    def get_type(self, obj):
+        if obj.is_staff:
+            return "coach"
+        else:
+            return "athlete"
