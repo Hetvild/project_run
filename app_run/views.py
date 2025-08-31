@@ -10,7 +10,10 @@ from app_run.serializers import RunSerializer, CouchAthleteSerializer
 
 # Create your views here.
 @api_view(["GET"])
-def company_details(request):
+def company_details(request) -> Response:
+    """
+    Возвращает информацию о компании, данные берутся из settings.py
+    """
     details = {
         "company_name": settings.COMPANY_NAME,
         "slogan": settings.SLOGAN,
@@ -20,7 +23,7 @@ def company_details(request):
 
 
 class RunViewSet(viewsets.ModelViewSet):
-    queryset = Run.objects.all()
+    queryset = Run.objects.select_related("athlete").all()
     serializer_class = RunSerializer
 
 
