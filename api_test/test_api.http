@@ -14,6 +14,10 @@ Content-Type: application/json
 GET http://127.0.0.1:8000/api/users/
     ?type=athlete
 
+### GET запрос на получения тренеров и атлетов по параметрам в get запросе
+GET http://127.0.0.1:8000/api/users/
+    ?search=Юля
+
 
 ### GET запрос на получения забегов
 GET http://127.0.0.1:8000/api/runs/
