@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from app_run.models import Run
 from app_run.serializers import RunSerializer, CouchAthleteSerializer
@@ -37,10 +39,46 @@ class CouchAthleteViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         qs = self.queryset
         type = self.request.query_params.get("type", None)
+
         if type == "coach":
-            print("type coach")
             return qs.filter(is_staff=True)
+
         elif type == "athlete":
             return qs.filter(is_staff=False)
+
         else:
             return qs
+
+
+class StartRunAPIView(APIView):
+    def post(self, request, run_id):
+        run = get_object_or_404(Run, pk=run_id)
+
+        if run.status != "init":
+            return Response(
+                {"Ошибка": "Забег уже запущен или закончен"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        run.status = "in_progress"
+        run.save()
+
+        serializer = RunSerializer(run)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class StopRunAPIView(APIView):
+    def post(self, request, run_id):
+        run = get_object_or_404(Run, pk=run_id)
+
+        # Проверяем, что статус бега не "завершен"
+        if run.status != "in_progress":
+            return Response(
+                {"Ошибка": "Забег еще не запущен"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        run.status = "finished"
+        run.save()
+
+        serializer = RunSerializer(run)
+        return Response(serializer.data, status=status.HTTP_200_OK)
