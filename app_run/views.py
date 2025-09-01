@@ -1,9 +1,9 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
-from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -28,13 +28,18 @@ def company_details(request) -> Response:
 class RunViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.select_related("athlete").all()
     serializer_class = RunSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["status", "athlete"]
+    ordering_fields = ["created_at"]
 
 
 class CouchAthleteViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.filter(is_superuser=False)
     serializer_class = CouchAthleteSerializer
-    filter_backends = [SearchFilter]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["date_joined"]
     search_fields = ["first_name", "last_name"]
+    ordering_fields = ["data_joined"]
 
     def get_queryset(self):
         qs = self.queryset
@@ -51,7 +56,7 @@ class CouchAthleteViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class StartRunAPIView(APIView):
-    def post(self, request, run_id):
+    def post(self, request, run_id: int) -> Response:
         run = get_object_or_404(Run, pk=run_id)
 
         if run.status != "init":
@@ -68,7 +73,7 @@ class StartRunAPIView(APIView):
 
 
 class StopRunAPIView(APIView):
-    def post(self, request, run_id):
+    def post(self, request, run_id) -> Response:
         run = get_object_or_404(Run, pk=run_id)
 
         # Проверяем, что статус бега не "завершен"
