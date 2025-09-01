@@ -49,7 +49,7 @@ class CouchAthleteViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ["date_joined"]
     search_fields = ["first_name", "last_name"]
-    ordering_fields = ["data_joined"]
+    ordering_fields = ["date_joined"]
     pagination_class = ViewPagination
 
     def get_queryset(self):
