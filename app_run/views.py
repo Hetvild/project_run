@@ -1,4 +1,7 @@
+from http.client import HTTPResponse
+
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -6,14 +9,16 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app_run.models import Run
-from app_run.serializers import RunSerializer, CouchAthleteSerializer
-
-
-# Create your views here.
+from app_run.models import Run, AthleteInfo
+from app_run.serializers import (
+    RunSerializer,
+    CouchAthleteSerializer,
+    AthleteInfoSerializer,
+)
 
 
 class ViewPagination(PageNumberPagination):
@@ -98,3 +103,46 @@ class StopRunAPIView(APIView):
 
         serializer = RunSerializer(run)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AthleteInfoAPIView(APIView):
+    # Получение информации о целях, весе и id пользователя
+    def get(self, request: Request, user_id: int) -> Response:
+        """
+        Метод get возвращает информацию о целях, весе и id пользователя
+        """
+        # Ищем пользователя по id, если его нет, то возвращаем ошибку 404
+        user = get_object_or_404(User, pk=user_id)
+
+        # Ищем запись в таблице AthleteInfo по user_id, если нет, то создаем новую пустую запись
+        athlete_info, created = AthleteInfo.objects.get_or_create(
+            user_id=user,  # ← ищем по user_id
+            defaults={
+                "goals": "",
+                "weight": None,
+            },
+        )
+        # Сериализуем данные
+        serializer = AthleteInfoSerializer(athlete_info)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request: Request, user_id: int) -> Response:
+        """
+        Метод put обновляет информацию о целях и весе по id пользователя
+        """
+        # Получаем переданные данные из запроса в формате JSON
+        data = request.data
+
+        # Ищем пользователя по id, если его нет, то возвращаем ошибку 404
+        user = get_object_or_404(User, pk=user_id)
+
+        # Ищем запись в таблице AthleteInfo по user_id, если нет, то обновляем данными из запроса
+        athlete_info, created = AthleteInfo.objects.update_or_create(
+            user_id=user,
+            defaults={
+                "goals": data.get("goals"),
+                "weight": data.get("weight"),
+            },
+        )
+        serializer = AthleteInfoSerializer(athlete_info)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
