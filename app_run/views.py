@@ -134,7 +134,7 @@ class AthleteInfoAPIView(APIView):
         data = request.data
 
         # Добавляем проверку что data.get("weight") является числом
-        if not data.get("weight"):
+        if not int(data.get("weight")):
             return Response(
                 {"Ошибка": "Вес должен быть числом"}, status=status.HTTP_400_BAD_REQUEST
             )
