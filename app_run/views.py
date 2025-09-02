@@ -133,16 +133,20 @@ class AthleteInfoAPIView(APIView):
         # Получаем переданные данные из запроса в формате JSON
         data = request.data
 
-        # Ищем пользователя по id, если его нет, то возвращаем ошибку 404
-        user = get_object_or_404(User, pk=user_id)
+        if 0 < data.get("weight") < 900:
+            # Ищем пользователя по id, если его нет, то возвращаем ошибку 404
+            user = get_object_or_404(User, pk=user_id)
 
-        # Ищем запись в таблице AthleteInfo по user_id, если нет, то обновляем данными из запроса
-        athlete_info, created = AthleteInfo.objects.update_or_create(
-            user_id=user,
-            defaults={
-                "goals": data.get("goals"),
-                "weight": data.get("weight"),
-            },
-        )
-        serializer = AthleteInfoSerializer(athlete_info)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # Ищем запись в таблице AthleteInfo по user_id, если нет, то обновляем данными из запроса
+            athlete_info, created = AthleteInfo.objects.update_or_create(
+                user_id=user,
+                defaults={
+                    "goals": data.get("goals"),
+                    "weight": data.get("weight"),
+                },
+            )
+            serializer = AthleteInfoSerializer(athlete_info)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

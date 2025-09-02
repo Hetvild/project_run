@@ -35,13 +35,13 @@ POST http://127.0.0.1:8000/api/runs/25/start/
 POST http://127.0.0.1:8000/api/runs/25/stop/
 
 ### GET запрос на получения записей атлетов
-GET http://127.0.0.1:8000/api/athlete_info/2/
+GET http://127.0.0.1:8000/api/athlete_info/1/
 
 ### PUT запрос на изменение записей атлетов
 PUT http://127.0.0.1:8000/api/athlete_info/1/
 Content-Type: application/json
 
 {
-  "goals": "Новая цель",
-  "weight": 88
+  "goals": "Новая цель3",
+  "weight": 899
 }
