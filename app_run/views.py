@@ -122,6 +122,7 @@ class AthleteInfoAPIView(APIView):
                 "weight": None,
             },
         )
+
         # Сериализуем данные
         serializer = AthleteInfoSerializer(athlete_info)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -134,11 +135,12 @@ class AthleteInfoAPIView(APIView):
         data = request.data
 
         # Добавляем проверку что data.get("weight") является числом
-        if not int(data.get("weight")):
+        if not data.get("weight").isdigit():
             return Response(
                 {"Ошибка": "Вес должен быть числом"}, status=status.HTTP_400_BAD_REQUEST
             )
 
+        # Добавляем проверку, что вес не меньше 0 и не больше 900
         if 0 < int(data.get("weight")) < 900:
             # Ищем пользователя по id, если его нет, то возвращаем ошибку 404
             user = get_object_or_404(User, pk=user_id)
@@ -151,6 +153,8 @@ class AthleteInfoAPIView(APIView):
                     "weight": data.get("weight"),
                 },
             )
+
+            # Сериализуем данные
             serializer = AthleteInfoSerializer(athlete_info)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
