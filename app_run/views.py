@@ -133,7 +133,7 @@ class AthleteInfoAPIView(APIView):
         # Получаем переданные данные из запроса в формате JSON
         data = request.data
 
-        if 0 < data.get("weight") < 900:
+        if 0 < int(data.get("weight")) < 900:
             # Ищем пользователя по id, если его нет, то возвращаем ошибку 404
             user = get_object_or_404(User, pk=user_id)
 

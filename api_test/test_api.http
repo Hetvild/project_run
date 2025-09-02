@@ -43,5 +43,5 @@ Content-Type: application/json
 
 {
   "goals": "Новая цель3",
-  "weight": 899
+  "weight": 999
 }
