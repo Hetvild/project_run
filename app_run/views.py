@@ -1,7 +1,4 @@
-from http.client import HTTPResponse
-
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -127,30 +124,36 @@ class AthleteInfoAPIView(APIView):
         serializer = AthleteInfoSerializer(athlete_info)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request: Request, user_id: int) -> Response:
+    def put(self, request: Request, user_id: int):
         """
         Метод put обновляет информацию о целях и весе по id пользователя
         """
         # Получаем переданные данные из запроса в формате JSON
         data = request.data
 
-        # Добавляем проверку, что вес не меньше 0 и не больше 900
-        if 0 < int(data.get("weight")) < 900:
-            # Ищем пользователя по id, если его нет, то возвращаем ошибку 404
-            user = get_object_or_404(User, pk=user_id)
+        # Ищем пользователя по id, если его нет, то возвращаем ошибку 404
+        user = get_object_or_404(User, pk=user_id)
 
-            # Ищем запись в таблице AthleteInfo по user_id, если нет, то обновляем данными из запроса
-            athlete_info, created = AthleteInfo.objects.update_or_create(
-                user_id=user,
-                defaults={
-                    "goals": data.get("goals"),
-                    "weight": data.get("weight"),
-                },
-            )
+        # Сериализуем данные, чтобы проверить их на валидность до записи в базу данных
+        serializer = AthleteInfoSerializer(data=request.data, partial=True)
 
-            # Сериализуем данные
-            serializer = AthleteInfoSerializer(athlete_info, data=request.data)
+        # Если данные не валидны (проверяем значение "weight"), то возвращаем ошибку 400
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
+
+        # Ищем запись в таблице AthleteInfo по user_id, если нет, то обновляем данными из запроса
+        athlete_info, created = AthleteInfo.objects.update_or_create(
+            user_id=user,
+            defaults={
+                "goals": data.get("goals"),
+                "weight": data.get("weight"),
+            },
+        )
+
+        # Сериализуем данные
+        serializer = AthleteInfoSerializer(athlete_info, data=request.data)
+
+        # Если данные валидны, то обновляем данные в базе данных
+        if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)

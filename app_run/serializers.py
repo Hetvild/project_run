@@ -53,6 +53,15 @@ class CouchAthleteSerializer(serializers.ModelSerializer):
 class AthleteInfoSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(source="user.id", read_only=True)
 
+    weight = serializers.IntegerField(
+        min_value=0.1,
+        max_value=899.9,
+        error_messages={
+            "min_value": "Вес должен быть больше 0",
+            "max_value": "Вес должен быть меньше 900",
+        },
+    )
+
     class Meta:
         model = AthleteInfo
         fields = ("weight", "goals", "user_id")
