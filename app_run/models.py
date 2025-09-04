@@ -30,4 +30,4 @@ class AthleteInfo(models.Model):
 
 class Challenge(models.Model):
     full_name = models.CharField(max_length=50, default="Сделай 10 Забегов!")
-    athlete = models.OneToOneField(AthleteInfo, on_delete=models.CASCADE)
+    athlete = models.ForeignKey(User, on_delete=models.CASCADE)
