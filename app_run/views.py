@@ -99,6 +99,13 @@ class StopRunAPIView(APIView):
         run.status = "finished"
         run.save()
 
+        # Если забег закончен и id равен 10, то создаем запись в таблице Challenge
+        if run_id == 10:
+            full_name = "Сделай 10 Забегов!"
+            # Если забег закончен и id равен 10, то создаем запись в таблице Challenge
+            if run.status == "finished":
+                Challenge.objects.create(full_name=full_name, athlete=run.athlete)
+
         serializer = RunSerializer(run)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -28,11 +28,11 @@ Content-Type: application/json
 }
 
 ### GET запрос на получения забегов
-POST http://127.0.0.1:8000/api/runs/24/start/
+POST http://127.0.0.1:8000/api/runs/10/start/
 
 
 ### GET запрос на получения забегов
-POST http://127.0.0.1:8000/api/runs/25/stop/
+POST http://127.0.0.1:8000/api/runs/10/stop/
 
 ### GET запрос на получения записей атлетов
 GET http://127.0.0.1:8000/api/athlete_info/1/
