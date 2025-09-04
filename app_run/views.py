@@ -102,7 +102,6 @@ class StopRunAPIView(APIView):
         # Если забег закончен и id равен 10, то создаем запись в таблице Challenge
         if run_id == 10:
             full_name = "Сделай 10 Забегов!"
-            # Если забег закончен и id равен 10, то создаем запись в таблице Challenge
             if run.status == "finished":
                 Challenge.objects.create(full_name=full_name, athlete=run.athlete)
 
@@ -168,9 +167,8 @@ class AthleteInfoAPIView(APIView):
 
 
 class ChallengeViewSet(APIView):
-
     def get(self, request):
-
+        # Проверяем, что в запросе есть параметр athlete
         athlete_id = request.query_params.get("athlete", None)
 
         if athlete_id:
