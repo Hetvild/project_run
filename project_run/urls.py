@@ -26,6 +26,7 @@ from app_run.views import (
     StartRunAPIView,
     StopRunAPIView,
     AthleteInfoAPIView,
+    ChallengeViewSet,
 )
 
 router = routers.DefaultRouter()
@@ -39,5 +40,6 @@ urlpatterns = [
     path("api/runs/<int:run_id>/start/", StartRunAPIView.as_view()),
     path("api/runs/<int:run_id>/stop/", StopRunAPIView.as_view()),
     path("api/athlete_info/<int:user_id>/", AthleteInfoAPIView.as_view()),
+    path("api/challenges/", ChallengeViewSet.as_view()),
     path("", include(router.urls)),
 ]

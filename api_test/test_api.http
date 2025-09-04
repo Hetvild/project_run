@@ -45,3 +45,6 @@ Content-Type: application/json
   "goals": "Новая цель31",
   "weight": 9
 }
+
+### GET запрос на получения Challenges
+GET http://127.0.0.1:8000/api/challenges/

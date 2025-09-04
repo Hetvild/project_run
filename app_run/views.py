@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -157,3 +158,10 @@ class AthleteInfoAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ChallengeViewSet(APIView):
+
+    def get(self, request):
+        # challenge = get_object_or_404(Challenge, pk=challenge_id)
+        return HttpResponse("Hello, world. You're at the polls index.")
