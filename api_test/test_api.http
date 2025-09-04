@@ -47,7 +47,7 @@ Content-Type: application/json
 }
 
 ### GET запрос на получения Challenges по id пользователя
-GET http://127.0.0.1:8000/api/challenges?athlete11=1
+GET http://127.0.0.1:8000/api/challenges?athlete=1
 
 ### GET запрос на получения Challenges всех записей
 GET http://127.0.0.1:8000/api/challenges
