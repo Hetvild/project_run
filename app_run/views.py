@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -11,11 +10,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app_run.models import Run, AthleteInfo
+from app_run.models import Run, AthleteInfo, Challenge
 from app_run.serializers import (
     RunSerializer,
     CouchAthleteSerializer,
     AthleteInfoSerializer,
+    ChallengeSerializer,
 )
 
 
@@ -163,5 +163,17 @@ class AthleteInfoAPIView(APIView):
 class ChallengeViewSet(APIView):
 
     def get(self, request):
-        # challenge = get_object_or_404(Challenge, pk=challenge_id)
-        return HttpResponse("Hello, world. You're at the polls index.")
+
+        athlete_id = request.query_params.get("athlete", None)
+
+        if athlete_id:
+            challenges = Challenge.objects.select_related("athlete").filter(
+                athlete=athlete_id
+            )
+            serializer = ChallengeSerializer(challenges, many=True)
+            return Response(serializer.data)
+
+        else:
+            challenges = Challenge.objects.all()
+            serializer = ChallengeSerializer(challenges, many=True)
+            return Response(serializer.data)
