@@ -177,13 +177,13 @@ class ChallengeViewSet(APIView):
             )
             # Получаем количество завершенных забегов
             runs_finished = Run.objects.filter(
-                athlete=athlete_id, status="finished"
+                athlete=athlete_id,
+                status="finished",
             ).count()  # ← считаем количество завершенных забегов
             print(runs_finished)
 
-            if runs_finished >= 10:
-                serializer = ChallengeSerializer(challenges, many=True)
-                return Response(serializer.data)
+            serializer = ChallengeSerializer(challenges, many=True)
+            return Response(serializer.data)
 
         else:
             challenges = Challenge.objects.all()

@@ -50,4 +50,4 @@ Content-Type: application/json
 GET http://127.0.0.1:8000/api/challenges?athlete=2
 
 ### GET запрос на получения Challenges всех записей
-GET http://127.0.0.1:8000/api/challenges
+GET http://127.0.0.1:8000/api/challenges/
