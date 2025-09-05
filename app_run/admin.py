@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from app_run.models import Run, AthleteInfo, Challenge
+from app_run.models import Run, AthleteInfo, Challenge, Position
 
 
 # Register your models here.
@@ -17,3 +17,8 @@ class AthleteInfoAdmin(admin.ModelAdmin):
 @admin.register(Challenge)
 class ChallengeAdmin(admin.ModelAdmin):
     list_display = ("id", "full_name", "athlete")
+
+
+@admin.register(Position)
+class PositionAdmin(admin.ModelAdmin):
+    list_display = ("id", "run", "latitude", "longitude")
