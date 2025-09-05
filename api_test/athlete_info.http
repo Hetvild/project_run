@@ -1,0 +1,13 @@
+### GET запрос на получения записей атлетов
+GET http://127.0.0.1:8000/api/athlete_info/1/
+
+### PUT запрос на изменение записей атлетов
+PUT http://127.0.0.1:8000/api/athlete_info/1/
+Content-Type: application/json
+
+{
+  "goals": "Новая цель31",
+  "weight": 9
+}
+
+###

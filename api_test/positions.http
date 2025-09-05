@@ -1,0 +1,10 @@
+### GET запрос на получения всех записей модели Position
+GET http://127.0.0.1:8000/api/positions/
+
+### GET запрос на получения позиции модели Position, для переданного Run
+GET http://127.0.0.1:8000/api/positions/
+    ?run=4
+
+### DELETE запрос на удаление записанной позиции Position
+DELETE http://127.0.0.1:8000/api/positions/2/
+
