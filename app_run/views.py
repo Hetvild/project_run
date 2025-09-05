@@ -171,26 +171,21 @@ class ChallengeViewSet(APIView):
         # Проверяем, что в запросе есть параметр athlete
         athlete_id = request.query_params.get("athlete", None)
 
-        # Получаем количество завершенных забегов
-        runs = Run.objects.filter(
-            athlete=athlete_id, status="finished"
-        ).count()  # ← считаем количество завершенных забегов
-        print(runs)
-        # Проверяем, по athlete_id что у пользователя есть 10 завершенных забегов
-        # if athlete_id:
-        #     runs = Run.objects.filter(
-        #         athlete=athlete_id, status="finished"
-        #     ).count()  # ← считаем количество завершенных забегов
-        #
-        #     # Если количество завершенных забегов равно 10, то возвращаем 200 статус
-        #     if runs == 10:
-
         if athlete_id:
             challenges = Challenge.objects.select_related("athlete").filter(
                 athlete=athlete_id
             )
-            serializer = ChallengeSerializer(challenges, many=True)
-            return Response(serializer.data)
+            # Получаем количество завершенных забегов
+            runs_finished = Run.objects.filter(
+                athlete=athlete_id, status="finished"
+            ).count()  # ← считаем количество завершенных забегов
+            print(runs_finished)
+
+            if runs_finished >= 10:
+                serializer = ChallengeSerializer(challenges, many=True)
+                return Response(serializer.data)
+            else:
+                return Response("Данных нет", status=status.HTTP_404_NOT_FOUND)
 
         else:
             challenges = Challenge.objects.all()
