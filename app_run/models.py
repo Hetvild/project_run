@@ -43,6 +43,6 @@ class Position(models.Model):
         longitude (FloatField): Долгота местоположения в десятичном формате.
     """
 
-    run = models.IntegerField()
+    run = models.ForeignKey(Run, on_delete=models.CASCADE, related_name="positions")
     latitude = models.FloatField()
     longitude = models.FloatField()
