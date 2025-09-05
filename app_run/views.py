@@ -96,6 +96,7 @@ class StopRunAPIView(APIView):
                 {"Ошибка": "Забег еще не запущен"}, status=status.HTTP_400_BAD_REQUEST
             )
 
+        # Если забег завершен — обновляем статус на "finished"
         run.status = "finished"
         run.save()
 
