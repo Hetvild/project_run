@@ -33,7 +33,7 @@ from app_run.views import (
 router = routers.DefaultRouter()
 router.register("api/runs", RunViewSet)
 router.register("api/users", CouchAthleteViewSet)
-router.register("api/positions/", PositionViewSet)
+router.register("api/positions", PositionViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
