@@ -99,11 +99,17 @@ class StopRunAPIView(APIView):
         run.status = "finished"
         run.save()
 
-        # Если забег закончен и id равен 10, то создаем запись в таблице Challenge
-        if run_id == 10:
-            full_name = "Сделай 10 Забегов!"
-            if run.status == "finished":
-                Challenge.objects.create(full_name=full_name, athlete=run.athlete)
+        athlete = run.athlete
+        finished_runs_count = Run.objects.filter(
+            athlete=athlete, status="finished"
+        ).count()
+
+        # Если это 10-й завершённый забег — создаём челлендж (если ещё не создан)
+        if finished_runs_count == 10:
+            Challenge.objects.get_or_create(
+                athlete=athlete,
+                full_name="Сделай 10 Забегов!",
+            )
 
         serializer = RunSerializer(run)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -168,24 +174,23 @@ class AthleteInfoAPIView(APIView):
 
 class ChallengeViewSet(APIView):
     def get(self, request):
-        # Проверяем, что в запросе есть параметр athlete
-        athlete_id = request.query_params.get("athlete", None)
+        athlete_id = request.query_params.get("athlete")
 
+        # Если передан athlete — фильтруем по нему
         if athlete_id:
+            try:
+                athlete_id = int(athlete_id)
+            except ValueError:
+                return Response(
+                    {"error": "Параметр 'athlete' должен быть числом"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             challenges = Challenge.objects.select_related("athlete").filter(
-                athlete=athlete_id
+                athlete_id=athlete_id
             )
-            # Получаем количество завершенных забегов
-            runs_finished = Run.objects.filter(
-                athlete=athlete_id,
-                status="finished",
-            ).count()  # ← считаем количество завершенных забегов
-            print(runs_finished)
-
-            serializer = ChallengeSerializer(challenges, many=True)
-            return Response(serializer.data)
-
         else:
-            challenges = Challenge.objects.all()
-            serializer = ChallengeSerializer(challenges, many=True)
-            return Response(serializer.data)
+            # Иначе — все челленджи
+            challenges = Challenge.objects.select_related("athlete").all()
+
+        serializer = ChallengeSerializer(challenges, many=True)
+        return Response(serializer.data)
