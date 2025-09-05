@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from app_run.models import Run, AthleteInfo, Challenge
+from app_run.models import Run, AthleteInfo, Challenge, Position
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -69,6 +69,48 @@ class AthleteInfoSerializer(serializers.ModelSerializer):
 
 
 class ChallengeSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Challenge
         fields = "__all__"
+
+
+class PositionSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для модели Position, используемой для представления географических координат пробежки.
+
+    Основные функции:
+    - Валидация и сериализация данных широты и долготы.
+    - Обеспечение соответствия входных данных требованиям географических координат.
+    - Преобразование данных между форматом Python и JSON при работе с API.
+
+    Атрибуты:
+        latitude (FloatField): Поле широты. Значение должно находиться в диапазоне от -90 до 90.
+        longitude (FloatField): Поле долготы. Значение должно находиться в диапазоне от -180 до 180.
+    """
+
+    latitude = serializers.FloatField(
+        min_value=-90.0,
+        max_value=90.0,
+    )
+    longitude = serializers.FloatField(
+        min_value=-180.0,
+        max_value=180.0,
+    )
+
+    class Meta:
+        """
+        Вложенный класс Meta, задающий параметры сериализатора.
+
+        Атрибуты:
+            model (Model): Модель Django, к которой относится этот сериализатор — Position.
+            fields (tuple): Поля модели, которые будут включены в сериализацию.
+                Содержит:
+                - id: Уникальный идентификатор позиции.
+                - run: Идентификатор пробежки, к которой относится данная позиция.
+                - latitude: Широта.
+                - longitude: Долгота.
+        """
+
+        model = Position
+        fields = ("id", "run", "latitude", "longitude")
