@@ -184,8 +184,6 @@ class ChallengeViewSet(APIView):
             if runs_finished >= 10:
                 serializer = ChallengeSerializer(challenges, many=True)
                 return Response(serializer.data)
-            else:
-                return Response("Данных нет", status=status.HTTP_404_NOT_FOUND)
 
         else:
             challenges = Challenge.objects.all()
