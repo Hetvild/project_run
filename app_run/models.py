@@ -31,3 +31,18 @@ class AthleteInfo(models.Model):
 class Challenge(models.Model):
     full_name = models.CharField(max_length=50, default="Сделай 10 Забегов!")
     athlete = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class Position(models.Model):
+    """
+    Модель, представляющая географическую позицию пробежки.
+
+    Attributes:
+        run (IntegerField): Идентификатор пробежки, к которой относится данная позиция.
+        latitude (FloatField): Широта местоположения в десятичном формате.
+        longitude (FloatField): Долгота местоположения в десятичном формате.
+    """
+
+    run = models.IntegerField()
+    latitude = models.FloatField()
+    longitude = models.FloatField()
