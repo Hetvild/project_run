@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -10,12 +11,13 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app_run.models import Run, AthleteInfo, Challenge
+from app_run.models import Run, AthleteInfo, Challenge, Position
 from app_run.serializers import (
     RunSerializer,
     CouchAthleteSerializer,
     AthleteInfoSerializer,
     ChallengeSerializer,
+    PositionSerializer,
 )
 
 
@@ -195,3 +197,11 @@ class ChallengeViewSet(APIView):
 
         serializer = ChallengeSerializer(challenges, many=True)
         return Response(serializer.data)
+
+
+class PositionViewSet(viewsets.ModelViewSet):
+    queryset = Position.objects.all()
+    serializer_class = PositionSerializer
+
+    def get_queryset(self):
+        return HttpResponse("jr")
