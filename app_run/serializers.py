@@ -69,7 +69,6 @@ class AthleteInfoSerializer(serializers.ModelSerializer):
 
 
 class ChallengeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Challenge
         fields = "__all__"
@@ -114,3 +113,12 @@ class PositionSerializer(serializers.ModelSerializer):
 
         model = Position
         fields = ("id", "run", "latitude", "longitude")
+
+    def validate(self, data):
+        run = data["run"]
+        latitude = data["latitude"]
+        longitude = data["longitude"]
+
+        if run.status != "in_progress":
+            raise serializers.ValidationError()
+        return data
