@@ -116,8 +116,6 @@ class PositionSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         run = data["run"]
-        latitude = data["latitude"]
-        longitude = data["longitude"]
 
         if run.status != "in_progress":
             raise serializers.ValidationError()
