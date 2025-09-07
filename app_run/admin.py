@@ -6,7 +6,7 @@ from app_run.models import Run, AthleteInfo, Challenge, Position
 # Register your models here.
 @admin.register(Run)
 class RunAdmin(admin.ModelAdmin):
-    list_display = ("id", "comment", "athlete", "status")
+    list_display = ("id", "comment", "athlete", "status", "distance")
 
 
 @admin.register(AthleteInfo)
