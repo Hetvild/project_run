@@ -18,6 +18,7 @@ from app_run.serializers import (
     ChallengeSerializer,
     PositionSerializer,
 )
+from app_run.services import calculate_route_distance
 
 
 class ViewPagination(PageNumberPagination):
@@ -113,6 +114,15 @@ class StopRunAPIView(APIView):
                 full_name="Сделай 10 Забегов!",
             )
 
+        # Получаем список позиций из модели Position для текущего забега по полю run в виде словаря
+        positions_list = Position.objects.filter(run=run).values()
+        print(positions_list)
+        distance = calculate_route_distance(positions_list)
+        print(distance)
+        # Обновляем поле distance в модели Run
+        if distance:
+            run.distance = distance
+            run.save()
         serializer = RunSerializer(run)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

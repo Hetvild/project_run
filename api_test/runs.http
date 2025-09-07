@@ -10,13 +10,13 @@ POST http://127.0.0.1:8000/api/runs/
 Content-Type: application/json
 
 {
-  "comment": "Удачный забег и отправка запроса для проверки API у Юлии через APIView1",
+  "comment": "Новый забег4",
   "athlete": 2
 }
 
 ### GET запрос на получения забегов
-POST http://127.0.0.1:8000/api/runs/10/start/
+POST http://127.0.0.1:8000/api/runs/30/start/
 
 
 ### GET запрос на получения забегов
-POST http://127.0.0.1:8000/api/runs/10/stop/
+POST http://127.0.0.1:8000/api/runs/30/stop/
