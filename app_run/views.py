@@ -113,12 +113,12 @@ class StopRunAPIView(APIView):
         print(count)
 
         # Если это 10-й завершённый забег — создаём челлендж (если ещё не создан)
-        if count == 10:
+        if count["athlete__count"] == 10:
             Challenge.objects.get_or_create(
                 athlete=athlete,
                 full_name="Сделай 10 Забегов!",
             )
-        elif count >= 50:
+        elif count["athlete__count"] >= 50:
             Challenge.objects.get_or_create(
                 athlete=athlete,
                 full_name="Пробеги 50 километров!",
