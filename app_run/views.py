@@ -109,7 +109,9 @@ class StopRunAPIView(APIView):
         ).count()
         print(finished_runs_count)
 
-        count = Run.objects.filter(status="finished").aggregate(Count("athlete"))
+        count = Run.objects.filter(athlete=athlete, status="finished").aggregate(
+            Count("athlete")
+        )
         print(count)
 
         # Если это 10-й завершённый забег — создаём челлендж (если ещё не создан)
