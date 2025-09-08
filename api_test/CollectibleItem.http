@@ -1,0 +1,2 @@
+### GET запрос на получения забегов
+GET http://127.0.0.1:8000/api/collectible_item/

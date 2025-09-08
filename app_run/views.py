@@ -11,13 +11,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app_run.models import Run, AthleteInfo, Challenge, Position
+from app_run.models import Run, AthleteInfo, Challenge, Position, CollectibleItem
 from app_run.serializers import (
     RunSerializer,
     CouchAthleteSerializer,
     AthleteInfoSerializer,
     ChallengeSerializer,
     PositionSerializer,
+    CollectibleItemSerializer,
 )
 from app_run.services import calculate_route_distance
 
@@ -241,3 +242,8 @@ class PositionViewSet(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["run"]
+
+
+class CollectibleItemViewSet(viewsets.ModelViewSet):
+    queryset = CollectibleItem.objects.all()
+    serializer_class = CollectibleItemSerializer
