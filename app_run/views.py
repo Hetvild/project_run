@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -103,15 +104,23 @@ class StopRunAPIView(APIView):
         run.save()
 
         athlete = run.athlete
-        finished_runs_count = Run.objects.filter(
-            athlete=athlete, status="finished"
-        ).count()
+        # finished_runs_count = Run.objects.filter(
+        #     athlete=athlete, status="finished"
+        # ).count()
+
+        count = Run.objects.filter(status="finished").aggregate(Count("athlete"))
+        # print(count)
 
         # Если это 10-й завершённый забег — создаём челлендж (если ещё не создан)
-        if finished_runs_count == 10:
+        if count == 10:
             Challenge.objects.get_or_create(
                 athlete=athlete,
                 full_name="Сделай 10 Забегов!",
+            )
+        elif count == 50:
+            Challenge.objects.get_or_create(
+                athlete=athlete,
+                full_name="Пробеги 50 километров!",
             )
 
         # Получаем список позиций из модели Position для текущего забега по полю run в виде словаря
