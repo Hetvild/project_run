@@ -123,6 +123,40 @@ class PositionSerializer(serializers.ModelSerializer):
 
 
 class CollectibleItemSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для модели CollectibleItem, используемой для представления собирательных элементов в API.
+
+    Основные функции:
+    - Валидация и сериализация данных объекта CollectibleItem.
+    - Преобразование данных между форматом Python и JSON при работе с API.
+    - Обеспечение доступа к полям модели, необходимым для отображения и редактирования.
+
+    Атрибуты:
+        id (IntegerField): Уникальный идентификатор элемента.
+        name (CharField): Название элемента. Максимальная длина — 255 символов.
+        uid (UUIDField): Уникальный идентификатор элемента (UUID).
+        latitude (FloatField): Широта местоположения элемента.
+        longitude (FloatField): Долгота местоположения элемента.
+        pictures (URLField): Список url ссылок на изображения, связанных с элементом.
+        value (DecimalField): Значение элемента, например, стоимость или рейтинг.
+    """
+
     class Meta:
+        """
+        Вложенный класс Meta, задающий параметры сериализатора.
+
+        Атрибуты:
+            model (Model): Модель Django, к которой относится этот сериализатор — CollectibleItem.
+            fields (tuple): Поля модели, которые будут включены в сериализацию.
+                Содержит:
+                - id: Уникальный идентификатор элемента.
+                - name: Название элемента.
+                - uid: Уникальный идентификатор (UUID).
+                - latitude: Широта местоположения.
+                - longitude: Долгота местоположения.
+                - pictures: Список url ссылок на изображения.
+                - value: Значение элемента.
+        """
+
         model = CollectibleItem
         fields = ("id", "name", "uid", "latitude", "longitude", "pictures", "value")
