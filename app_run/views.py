@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -104,15 +104,20 @@ class StopRunAPIView(APIView):
         run.save()
 
         athlete = run.athlete
-        finished_runs_count = Run.objects.filter(
-            athlete=athlete, status="finished"
-        ).count()
-        print(finished_runs_count)
+        # finished_runs_count = Run.objects.filter(
+        #     athlete=athlete, status="finished"
+        # ).count()
+        # print(finished_runs_count)
 
         count = Run.objects.filter(athlete=athlete, status="finished").aggregate(
             Count("athlete")
         )
         print(count)
+
+        distance_sum = Run.objects.filter(athlete=athlete, status="finished").aggregate(
+            Sum("distance")
+        )
+        print(distance_sum)
 
         # Если это 10-й завершённый забег — создаём челлендж (если ещё не создан)
         if count["athlete__count"] == 10:
@@ -120,7 +125,9 @@ class StopRunAPIView(APIView):
                 athlete=athlete,
                 full_name="Сделай 10 Забегов!",
             )
-        elif count["athlete__count"] >= 50:
+
+        # Если сумма завершенных забегов больше или равна 50 км — создаём челлендж (если ещё не создан)
+        if distance_sum["distance__sum"] >= 50:
             Challenge.objects.get_or_create(
                 athlete=athlete,
                 full_name="Пробеги 50 километров!",
