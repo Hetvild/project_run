@@ -104,10 +104,15 @@ class StopRunAPIView(APIView):
         run.save()
 
         athlete = run.athlete
-        # finished_runs_count = Run.objects.filter(
-        #     athlete=athlete, status="finished"
-        # ).count()
-        # print(finished_runs_count)
+
+        # Получаем список позиций из модели Position для текущего забега по полю run в виде словаря
+        positions_list = Position.objects.filter(run=run).values()
+        distance = calculate_route_distance(positions_list)
+
+        # Обновляем поле distance в модели Run
+        if distance:
+            run.distance = distance
+            run.save()
 
         count = Run.objects.filter(athlete=athlete, status="finished").aggregate(
             Count("athlete")
@@ -132,15 +137,6 @@ class StopRunAPIView(APIView):
                 athlete=athlete,
                 full_name="Пробеги 50 километров!",
             )
-
-        # Получаем список позиций из модели Position для текущего забега по полю run в виде словаря
-        positions_list = Position.objects.filter(run=run).values()
-        distance = calculate_route_distance(positions_list)
-
-        # Обновляем поле distance в модели Run
-        if distance:
-            run.distance = distance
-            run.save()
 
         serializer = RunSerializer(run)
         return Response(serializer.data, status=status.HTTP_200_OK)
