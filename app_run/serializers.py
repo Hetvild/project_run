@@ -141,22 +141,19 @@ class CollectibleItemSerializer(serializers.ModelSerializer):
         value (DecimalField): Значение элемента, например, стоимость или рейтинг.
     """
 
+    # Проверяем что value является числом
+    value = serializers.IntegerField()
+
+    # Проверяем что latitude и longitude в диапазоне от -90 до 90 и от -180 до 180
+    latitude = serializers.FloatField(
+        min_value=-90.0,
+        max_value=90.0,
+    )
+    longitude = serializers.FloatField(
+        min_value=-180.0,
+        max_value=180.0,
+    )
+
     class Meta:
-        """
-        Вложенный класс Meta, задающий параметры сериализатора.
-
-        Атрибуты:
-            model (Model): Модель Django, к которой относится этот сериализатор — CollectibleItem.
-            fields (tuple): Поля модели, которые будут включены в сериализацию.
-                Содержит:
-                - id: Уникальный идентификатор элемента.
-                - name: Название элемента.
-                - uid: Уникальный идентификатор (UUID).
-                - latitude: Широта местоположения.
-                - longitude: Долгота местоположения.
-                - pictures: Список url ссылок на изображения.
-                - value: Значение элемента.
-        """
-
         model = CollectibleItem
         fields = ("id", "name", "uid", "latitude", "longitude", "pictures", "value")

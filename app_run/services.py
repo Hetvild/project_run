@@ -1,9 +1,13 @@
+import io
 from typing import Any
 
 from django.db.models import QuerySet
 from geopy.distance import geodesic
 
 from app_run.models import Position
+from openpyxl import load_workbook
+
+from app_run.serializers import CollectibleItemSerializer
 
 
 def calculate_route_distance(coordinates: QuerySet[Position, dict[str, Any]]) -> float:
@@ -45,3 +49,46 @@ def calculate_route_distance(coordinates: QuerySet[Position, dict[str, Any]]) ->
         total_distance += distance
 
     return total_distance
+
+
+def read_excel_file(uploaded_file):
+    # Читаем переданный файл
+    file_content = uploaded_file.read()
+    # Переводим файл в байтовый поток
+    file_bytes = io.BytesIO(file_content)
+
+    # Загружаем файл в экземпляр класса Workbook
+    wb = load_workbook(file_bytes)
+    # Получаем активный лист
+    worksheet = wb.active
+    # Получаем количество строк в листе
+    max_row = worksheet.max_row
+
+    # Создаем пустой список для хранения не валидных данных
+    data_error = []
+
+    # Получаем данные из листа
+    for row in worksheet.iter_rows(values_only=True, min_row=2, max_row=max_row):
+        # Присваиваем значения переменным
+        name, uid, value, latitude, longitude, pictures = row
+
+        # Формируем словарь для сериализации
+        data = {
+            "name": name,
+            "uid": uid,
+            "latitude": latitude,
+            "longitude": longitude,
+            "pictures": pictures,
+            "value": value,
+        }
+
+        # Отправляем данные на сериализацию
+        serializer = CollectibleItemSerializer(data=data)
+
+        # Проверяем валидность данных, если данные валидны, сохраняем их в базе данных
+        if serializer.is_valid():
+            # Сохраняем данные в базе данных
+            serializer.save()
+        else:
+            # Если данные не валидны, добавляем их в список ошибок
+            data_error.append(list(data.values()))

@@ -1,3 +1,5 @@
+import io
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum
@@ -21,7 +23,7 @@ from app_run.serializers import (
     PositionSerializer,
     CollectibleItemSerializer,
 )
-from app_run.services import calculate_route_distance
+from app_run.services import calculate_route_distance, read_excel_file
 
 
 class ViewPagination(PageNumberPagination):
@@ -252,11 +254,21 @@ class CollectibleItemViewSet(viewsets.ModelViewSet):
 
 class UploadFileAPIView(APIView):
     def post(self, request):
-        file = request.FILES
-        print(file)
-        # file = request.FILES["file"]
-        # serializer = CollectibleItemSerializer(data=request.data)
+        # Если файл не передан, то возвращаем ошибку 400
+        if not request.FILES:
+            return Response(
+                {"error": "Файл не был загружен"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        # Получаем переданный файл из запроса
+        uploaded_file = request.FILES.get("upload_example", None)
+
+        # Проверяем, что файл не пустой и имеет расширение .xlsx
+        if uploaded_file.name.endswith(".xlsx"):
+
+            # Отправляем полученный файл на чтение
+            read_excel_file(uploaded_file)
+
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         return HttpResponse("ok", status=status.HTTP_201_CREATED)
-        # if serializer.is_valid():
-        #     serializer.save()
