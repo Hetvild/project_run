@@ -271,5 +271,3 @@ class UploadFileAPIView(APIView):
 
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
-        return HttpResponse("ok", status=status.HTTP_201_CREATED)
