@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -247,3 +248,15 @@ class PositionViewSet(viewsets.ModelViewSet):
 class CollectibleItemViewSet(viewsets.ModelViewSet):
     queryset = CollectibleItem.objects.all()
     serializer_class = CollectibleItemSerializer
+
+
+class UploadFileAPIView(APIView):
+    def post(self, request):
+        file = request.FILES
+        print(file)
+        # file = request.FILES["file"]
+        # serializer = CollectibleItemSerializer(data=request.data)
+
+        return HttpResponse("ok", status=status.HTTP_201_CREATED)
+        # if serializer.is_valid():
+        #     serializer.save()
