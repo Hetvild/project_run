@@ -4,5 +4,5 @@ Content-Type: multipart/form-data; boundary=boundary
 --boundary
 Content-Disposition: form-data; name="upload_example"; filename="upload_example.xlsx"
 
-// The 'input.txt' file will be uploaded
-< upload_example.xlsx
+// The 'upload_example.xlsx' file will be uploaded
+< ../data_test/upload_example.xlsx
