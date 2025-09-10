@@ -264,9 +264,10 @@ class UploadFileAPIView(APIView):
 
         # Проверяем, что файл не пустой и имеет расширение .xlsx
         if uploaded_file.name.endswith(".xlsx"):
-
             # Отправляем полученный файл на чтение
-            read_excel_file(uploaded_file)
+            data_error = read_excel_file(uploaded_file)
+
+            return Response(data_error, status=status.HTTP_200_OK)
 
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)

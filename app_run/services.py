@@ -92,3 +92,5 @@ def read_excel_file(uploaded_file):
         else:
             # Если данные не валидны, добавляем их в список ошибок
             data_error.append(list(data.values()))
+
+    return data_error
