@@ -260,7 +260,7 @@ class UploadFileAPIView(APIView):
                 {"error": "Файл не был загружен"}, status=status.HTTP_400_BAD_REQUEST
             )
         # Получаем переданный файл из запроса
-        uploaded_file = request.FILES.get("upload_example", None)
+        uploaded_file = request.FILES.get("file", None)
 
         # Проверяем, что файл не пустой и имеет расширение .xlsx
         if uploaded_file.name.endswith(".xlsx"):
