@@ -50,8 +50,8 @@ class Position(models.Model):
 
 
 class CollectibleItem(models.Model):
-    name = models.CharField(max_length=100)
-    uid = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, blank=False)
+    uid = models.CharField(max_length=100, blank=False)
     latitude = models.FloatField()
     longitude = models.FloatField()
     pictures = models.URLField(max_length=500)

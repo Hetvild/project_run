@@ -142,20 +142,20 @@ class CollectibleItemSerializer(serializers.ModelSerializer):
     """
 
     # Проверяем что name не пустое и не длиннее 255 символов
-    name = serializers.CharField(blank=False)
+    name = serializers.CharField()
 
     # Проверяем что uid является тестовым полем, не может быть пустым
-    uid = serializers.CharField(blank=False)
+    uid = serializers.CharField()
 
     # Проверяем что value является числом, значение не может быть отрицательным
-    value = serializers.IntegerField(min_value=0, blank=False)
+    value = serializers.IntegerField()
 
     # Проверяем что поле pictures является url
-    pictures = serializers.URLField(blank=False)
+    pictures = serializers.URLField()
 
     # Проверяем что latitude и longitude в диапазоне от -90 до 90 и от -180 до 180
-    latitude = serializers.FloatField(min_value=-90.0, max_value=90.0, blank=False)
-    longitude = serializers.FloatField(min_value=-180.0, max_value=180.0, blank=False)
+    latitude = serializers.FloatField(min_value=-90.0, max_value=90.0)
+    longitude = serializers.FloatField(min_value=-180.0, max_value=180.0)
 
     class Meta:
         model = CollectibleItem
