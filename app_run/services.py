@@ -67,7 +67,7 @@ def read_excel_file(uploaded_file):
     data_error = []
 
     # Получаем данные из листа
-    for row in worksheet.iter_rows(values_only=True, min_row=1, max_row=max_row):
+    for row in worksheet.iter_rows(values_only=True, min_row=2, max_row=max_row):
         # Присваиваем значения переменным
         name, uid, value, latitude, longitude, pictures = row
 
@@ -90,6 +90,6 @@ def read_excel_file(uploaded_file):
             serializer.save()
         else:
             # Если данные не валидны, добавляем их в список ошибок
-            data_error.append(list(data.values()))
-
+            data_error.append(list(row))
+    print(data_error)
     return data_error
