@@ -151,7 +151,7 @@ class CollectibleItemSerializer(serializers.ModelSerializer):
     value = serializers.IntegerField()
 
     # Проверяем что поле pictures является url
-    pictures = serializers.URLField()
+    picture = serializers.URLField()
 
     # Проверяем что latitude и longitude в диапазоне от -90 до 90 и от -180 до 180
     latitude = serializers.FloatField(min_value=-90.0, max_value=90.0)
@@ -159,4 +159,4 @@ class CollectibleItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CollectibleItem
-        fields = ("id", "name", "uid", "latitude", "longitude", "pictures", "value")
+        fields = ("id", "name", "uid", "latitude", "longitude", "picture", "value")

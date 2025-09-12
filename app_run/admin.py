@@ -26,4 +26,4 @@ class PositionAdmin(admin.ModelAdmin):
 
 @admin.register(CollectibleItem)
 class CollectibleItemAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "uid", "latitude", "longitude", "pictures", "value")
+    list_display = ("id", "name", "uid", "latitude", "longitude", "picture", "value")

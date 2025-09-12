@@ -54,5 +54,5 @@ class CollectibleItem(models.Model):
     uid = models.CharField(max_length=100, blank=False)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    pictures = models.URLField(max_length=500)
+    picture = models.URLField(max_length=500)
     value = models.IntegerField()

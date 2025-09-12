@@ -69,16 +69,16 @@ def read_excel_file(uploaded_file):
     # Получаем данные из листа
     for row in worksheet.iter_rows(values_only=True, min_row=2, max_row=max_row):
         # Присваиваем значения переменным
-        name, uid, value, latitude, longitude, pictures = row
+        name, uid, value, latitude, longitude, picture = row
 
         # Формируем словарь для сериализации
         data = {
             "name": name,
             "uid": uid,
+            "value": value,
             "latitude": latitude,
             "longitude": longitude,
-            "pictures": pictures,
-            "value": value,
+            "picture": picture,
         }
 
         # Отправляем данные на сериализацию
