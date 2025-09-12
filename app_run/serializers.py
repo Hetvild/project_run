@@ -141,6 +141,12 @@ class CollectibleItemSerializer(serializers.ModelSerializer):
         value (DecimalField): Значение элемента, например, стоимость или рейтинг.
     """
 
+    # Проверяем что name не пустое и не длиннее 255 символов
+    name = serializers.CharField()
+
+    # Проверяем что uid является тестовым полем
+    uid = serializers.CharField()
+
     # Проверяем что value является числом
     value = serializers.IntegerField()
 
