@@ -3,10 +3,9 @@ from typing import Any
 
 from django.db.models import QuerySet
 from geopy.distance import geodesic
-
-from app_run.models import Position
 from openpyxl import load_workbook
 
+from app_run.models import Position
 from app_run.serializers import CollectibleItemSerializer
 
 
@@ -68,7 +67,7 @@ def read_excel_file(uploaded_file):
     data_error = []
 
     # Получаем данные из листа
-    for row in worksheet.iter_rows(values_only=True, min_row=2, max_row=max_row):
+    for row in worksheet.iter_rows(values_only=True, min_row=1, max_row=max_row):
         # Присваиваем значения переменным
         name, uid, value, latitude, longitude, pictures = row
 
