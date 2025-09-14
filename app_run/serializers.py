@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from geopy.distance import geodesic
 from rest_framework import serializers
 
 from app_run.models import Run, AthleteInfo, Challenge, Position, CollectibleItem
@@ -120,6 +121,30 @@ class PositionSerializer(serializers.ModelSerializer):
         if run.status != "in_progress":
             raise serializers.ValidationError()
         return data
+
+    def create(self, validated_data):
+        # Создаём позицию
+        position = super().create(validated_data)
+
+        # Проверяем предметы рядом
+        self.check_collectible_items(position)
+
+        return position
+
+    def check_collectible_items(self, position):
+        from app_run.models import CollectibleItem  # чтобы избежать circular import
+
+        athlete = position.run.athlete
+        current_point = (position.latitude, position.longitude)
+
+        # Ищем все предметы
+        for item in CollectibleItem.objects.all():
+            item_point = (item.latitude, item.longitude)
+            distance = geodesic(current_point, item_point).meters
+
+            if distance < 100:
+                # Добавляем атлета к предмету (ManyToMany)
+                item.athlete.add(athlete)
 
 
 class CollectibleItemSerializer(serializers.ModelSerializer):
