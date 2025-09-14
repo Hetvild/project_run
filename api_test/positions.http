@@ -15,5 +15,16 @@ Content-Type: application/json
   "longitude": 77.2222123
 }
 
+### POST запрос для создания записи позиции в модели Position с датой и временем
+POST http://127.0.0.1:8000/api/positions/
+Content-Type: application/json
+
+{
+  "run": 24,
+  "latitude": 88.1111123,
+  "longitude": 77.2222123,
+  "date_time": "2024-09-14T15:09:42.000000"
+}
+
 ### DELETE запрос на удаление записанной позиции Position
 DELETE http://127.0.0.1:8000/api/positions/2/
