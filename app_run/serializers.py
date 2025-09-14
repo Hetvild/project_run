@@ -20,7 +20,15 @@ class RunSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Run
-        fields = "__all__"
+        fields = (
+            "id",
+            "created_at",
+            "comment",
+            "athlete",
+            "status",
+            "distance",
+            "run_time_seconds",
+        )
 
 
 class CouchAthleteSerializer(serializers.ModelSerializer):
@@ -98,6 +106,8 @@ class PositionSerializer(serializers.ModelSerializer):
         max_value=180.0,
     )
 
+    date_time = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S.%f")
+
     class Meta:
         """
         Вложенный класс Meta, задающий параметры сериализатора.
@@ -113,7 +123,7 @@ class PositionSerializer(serializers.ModelSerializer):
         """
 
         model = Position
-        fields = ("id", "run", "latitude", "longitude")
+        fields = ("id", "run", "latitude", "longitude", "date_time")
 
     def validate(self, data):
         run = data["run"]
