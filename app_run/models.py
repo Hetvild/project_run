@@ -50,10 +50,25 @@ class Position(models.Model):
 
 
 class CollectibleItem(models.Model):
+    """
+    Модель хранит коллекции предметов для награждения спортсменов, связанный с пользователем (спортсменом).
+
+    Attributes:
+        name (str): Название предмета. Обязательное поле.
+        uid (str): Уникальный идентификатор предмета. Обязательное поле.
+        latitude (float): Географическая широта местоположения предмета. Индексировано для ускорения поиска.
+        longitude (float): Географическая долгота местоположения предмета. Индексировано для ускорения поиска.
+        picture (str): URL изображения предмета. Максимальная длина — 500 символов.
+        value (int): Числовое значение или цена предмета.
+        athlete (ManyToManyField): Связь "многие ко многим" с моделью пользователя (User),
+                                   указывает, какие спортсмены имеют данный предмет.
+                                   related_name позволяет обращаться к предметам через пользователя как `collectible_items`.
+    """
+
     name = models.CharField(max_length=100, blank=False)
     uid = models.CharField(max_length=100, blank=False)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(db_index=True)
+    longitude = models.FloatField(db_index=True)
     picture = models.URLField(max_length=500)
     value = models.IntegerField()
-    athlete = models.ManyToManyField(User, related_name="athlete")
+    athlete = models.ManyToManyField(User, related_name="collectible_items")
