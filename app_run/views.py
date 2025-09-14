@@ -22,6 +22,7 @@ from app_run.serializers import (
     ChallengeSerializer,
     PositionSerializer,
     CollectibleItemSerializer,
+    CouchAthleteItemsSerializer,
 )
 from app_run.services import calculate_route_distance, read_excel_file
 
@@ -62,22 +63,27 @@ class CouchAthleteViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ["date_joined"]
     pagination_class = ViewPagination
 
+    def get_serializer_class(self):
+        if self.action == "retrieve":  # для /api/users/{id}/
+            return CouchAthleteItemsSerializer
+        else:
+            return CouchAthleteSerializer  # для /api/users/
+
     def get_queryset(self):
         qs = self.queryset
         type = self.request.query_params.get("type", None)
 
         if type == "coach":
             return qs.filter(is_staff=True)
-
         elif type == "athlete":
             return qs.filter(is_staff=False)
-
         else:
             return qs
 
 
 class StartRunAPIView(APIView):
-    def post(self, request, run_id: int) -> Response:
+    def post(self, request, *args, **kwargs) -> Response:
+        run_id = kwargs.get("run_id")
         run = get_object_or_404(Run, pk=run_id)
 
         if run.status != "init":

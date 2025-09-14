@@ -60,7 +60,7 @@ class CollectibleItem(models.Model):
         longitude (float): Географическая долгота местоположения предмета. Индексировано для ускорения поиска.
         picture (str): URL изображения предмета. Максимальная длина — 500 символов.
         value (int): Числовое значение или цена предмета.
-        athlete (ManyToManyField): Связь "многие ко многим" с моделью пользователя (User),
+        items (ManyToManyField): Связь "многие ко многим" с моделью пользователя (User),
                                    указывает, какие спортсмены имеют данный предмет.
                                    related_name позволяет обращаться к предметам через пользователя как `collectible_items`.
     """
@@ -71,4 +71,4 @@ class CollectibleItem(models.Model):
     longitude = models.FloatField(db_index=True)
     picture = models.URLField(max_length=500)
     value = models.IntegerField()
-    athlete = models.ManyToManyField(User, related_name="collectible_items")
+    athlete = models.ManyToManyField(User, related_name="items")

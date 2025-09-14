@@ -160,3 +160,20 @@ class CollectibleItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CollectibleItem
         fields = ("id", "name", "uid", "latitude", "longitude", "picture", "value")
+
+
+class CouchAthleteItemsSerializer(CouchAthleteSerializer):
+    """
+    Сериалайзер, который возвращает пользователя и его предметы из модели User и CollectibleItem
+    из связи many-to-many athlete = models.ManyToManyField(User, related_name="collectible_items")
+    """
+
+    # TODO: Разобраться что происходит с этим методом
+    # Переопределяем метод для получения списка предметов
+    items = CollectibleItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        # Переопределяем модель для CouchAthleteSerializer
+        model = User
+        # Добавляем поле items к полям CouchAthleteSerializer
+        fields = CouchAthleteSerializer.Meta.fields + ("items",)
