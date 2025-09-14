@@ -193,7 +193,6 @@ class CouchAthleteItemsSerializer(CouchAthleteSerializer):
     из связи many-to-many athlete = models.ManyToManyField(User, related_name="collectible_items")
     """
 
-    # TODO: Разобраться что происходит с этим методом
     # Переопределяем метод для получения списка предметов
     items = CollectibleItemSerializer(many=True, read_only=True)
 
