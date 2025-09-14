@@ -6,7 +6,14 @@ from app_run.models import Run, AthleteInfo, Challenge, Position, CollectibleIte
 # Register your models here.
 @admin.register(Run)
 class RunAdmin(admin.ModelAdmin):
-    list_display = ("id", "comment", "athlete", "status", "distance")
+    list_display = (
+        "id",
+        "comment",
+        "athlete",
+        "status",
+        "distance",
+        "run_time_seconds",
+    )
 
 
 @admin.register(AthleteInfo)
@@ -21,7 +28,7 @@ class ChallengeAdmin(admin.ModelAdmin):
 
 @admin.register(Position)
 class PositionAdmin(admin.ModelAdmin):
-    list_display = ("id", "run", "latitude", "longitude")
+    list_display = ("id", "run", "latitude", "longitude", "date_time")
 
 
 @admin.register(CollectibleItem)
