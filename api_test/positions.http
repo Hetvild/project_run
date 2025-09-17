@@ -3,27 +3,27 @@ GET http://127.0.0.1:8000/api/positions/
 
 ### GET запрос на получения позиции модели Position, для переданного Run
 GET http://127.0.0.1:8000/api/positions/
-    ?run=24
+    ?run=16
 
 ### POST запрос для создания записи позиции в  модели Position
 POST http://127.0.0.1:8000/api/positions/
 Content-Type: application/json
 
 {
-  "run": 24,
-  "latitude": 88.1111123,
+  "run": 2,
+  "latitude": 56.3456,
   "longitude": 77.2222123
 }
 
-### POST запрос для создания записи позиции в модели Position с датой и временем
+### POST запрос для создания записи позиции в модели Position с датой и временем, для забегов в статусе in_progres
 POST http://127.0.0.1:8000/api/positions/
 Content-Type: application/json
 
 {
-  "run": 24,
-  "latitude": 88.1111123,
-  "longitude": 77.2222123,
-  "date_time": "2024-09-14T15:09:42.000000"
+  "run": 14,
+  "latitude": "88.1111",
+  "longitude": "77.2222",
+  "date_time": "2025-09-17T14:53:08.123000"
 }
 
 ### DELETE запрос на удаление записанной позиции Position

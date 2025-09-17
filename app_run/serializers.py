@@ -28,6 +28,7 @@ class RunSerializer(serializers.ModelSerializer):
             "status",
             "distance",
             "run_time_seconds",
+            "athlete_data",
         )
 
 

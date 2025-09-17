@@ -15,8 +15,8 @@ Content-Type: application/json
 }
 
 ### GET запрос на получения забегов
-POST http://127.0.0.1:8000/api/runs/11/start/
+POST http://127.0.0.1:8000/api/runs/14/start/
 
 
 ### GET запрос на получения забегов
-POST http://127.0.0.1:8000/api/runs/11/stop/
+POST http://127.0.0.1:8000/api/runs/14/stop/

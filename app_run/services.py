@@ -9,6 +9,21 @@ from app_run.models import Position
 from app_run.serializers import CollectibleItemSerializer
 
 
+def calculate_run_time_seconds(run_time: list[dict[str, Any]]) -> int:
+
+    if len(run_time) < 2:
+        raise ValueError(
+            "Список должен содержать минимум две точки для расчета расстояния."
+        )
+
+    total_seconds: int = 0
+
+    for i in range(len(run_time) - 1):
+        print(f'{run_time[i]["date_time"]} - {run_time[i+1]["date_time"]}')
+
+    return total_seconds
+
+
 def calculate_route_distance(coordinates: QuerySet[Position, dict[str, Any]]) -> float:
     """
     Рассчитывает общее расстояние маршрута между географическими точками.
@@ -26,13 +41,6 @@ def calculate_route_distance(coordinates: QuerySet[Position, dict[str, Any]]) ->
         TypeError: Если значения "lat" или "lon" не являются числами.
         ValueError: Если список содержит менее двух точек.
 
-    Пример:
-        >>> coordinates = [
-        ...     {"latitude": 55.7558, "longitude": 37.6176},
-        ...     {"latitude": 48.8566, "longitude": 2.3522}
-        ... ]
-        >>> calculate_route_distance(coordinates)
-        1698.7
     """
     if len(coordinates) < 2:
         raise ValueError(

@@ -1,9 +1,6 @@
-import io
-
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -24,7 +21,11 @@ from app_run.serializers import (
     CollectibleItemSerializer,
     CouchAthleteItemsSerializer,
 )
-from app_run.services import calculate_route_distance, read_excel_file
+from app_run.services import (
+    calculate_route_distance,
+    read_excel_file,
+    calculate_run_time_seconds,
+)
 
 
 class ViewPagination(PageNumberPagination):
@@ -113,11 +114,19 @@ class StopRunAPIView(APIView):
         run.status = "finished"
         run.save()
 
+        # Получаем спортсмена, который завершил забег
         athlete = run.athlete
 
         # Получаем список позиций из модели Position для текущего забега по полю run в виде словаря
         positions_list = Position.objects.filter(run=run).values()
+        print(f"positions_list: {positions_list}")
+
+        # Рассчитываем расстояние по полученным координатам
         distance = calculate_route_distance(positions_list)
+
+        # Рассчитываем время по пройденным координатам
+        run_time_seconds = calculate_run_time_seconds(positions_list)
+        print(f"run_time_seconds: {run_time_seconds}")
 
         # Обновляем поле distance в модели Run
         if distance:
