@@ -48,7 +48,9 @@ class Position(models.Model):
     run = models.ForeignKey(Run, on_delete=models.CASCADE, related_name="positions")
     latitude = models.FloatField()
     longitude = models.FloatField()
-    date_time = models.CharField(default="0", blank=True, null=True)
+    date_time = models.DateTimeField(
+        null=True, blank=True, help_text="Формат: YYYY-MM-DDTHH:MM:SSZ"
+    )
 
 
 class CollectibleItem(models.Model):
