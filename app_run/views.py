@@ -26,6 +26,7 @@ from app_run.serializers import (
 from app_run.services import (
     calculate_route_distance,
     read_excel_file,
+    calculate_run_time_seconds,
 )
 
 # Создаём логгер для этого модуля
@@ -129,12 +130,12 @@ class StopRunAPIView(APIView):
         distance = calculate_route_distance(positions_list)
 
         # Рассчитываем время по пройденным координатам
-        # run_time_seconds = calculate_run_time_seconds(run)
-        # logger.warning(f"run_time_seconds: {run_time_seconds}")
+        run_time_seconds = calculate_run_time_seconds(run)
+        logger.warning(f"run_time_seconds: {run_time_seconds}")
 
-        # if run_time_seconds:
-        #     run.run_time_seconds = run_time_seconds
-        #     run.save()
+        if run_time_seconds:
+            run.run_time_seconds = run_time_seconds
+            run.save()
 
         # Обновляем поле distance в модели Run
         if distance:

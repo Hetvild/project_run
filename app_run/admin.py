@@ -28,8 +28,7 @@ class ChallengeAdmin(admin.ModelAdmin):
 
 @admin.register(Position)
 class PositionAdmin(admin.ModelAdmin):
-    # list_display = ("id", "run", "latitude", "longitude", "date_time")
-    list_display = ("id", "run", "latitude", "longitude")
+    list_display = ("id", "run", "latitude", "longitude", "date_time")
 
 
 @admin.register(CollectibleItem)
