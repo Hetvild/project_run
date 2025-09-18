@@ -10,7 +10,7 @@ POST http://127.0.0.1:8000/api/positions/
 Content-Type: application/json
 
 {
-  "run": 2,
+  "run": 14,
   "latitude": 56.3456,
   "longitude": 77.2222123
 }
@@ -23,7 +23,7 @@ Content-Type: application/json
   "run": 14,
   "latitude": "88.1111",
   "longitude": "77.2222",
-  "date_time": "2025-09-17T14:53:08.123000"
+  "date_time": "2025-09-18T14:53:08.123000"
 }
 
 ### DELETE запрос на удаление записанной позиции Position
