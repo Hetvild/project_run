@@ -107,7 +107,14 @@ class PositionSerializer(serializers.ModelSerializer):
         max_value=180.0,
     )
 
-    date_time = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S.%f", required=True)
+    date_time = serializers.DateTimeField(
+        input_formats=[
+            "%Y-%m-%dT%H:%M:%S.%f",
+        ],
+        format="%Y-%m-%dT%H:%M:%S.%f",
+        required=True,
+        allow_null=False,
+    )
 
     class Meta:
         """
