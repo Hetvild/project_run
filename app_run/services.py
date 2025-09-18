@@ -26,6 +26,9 @@ def calculate_run_time_seconds(run) -> int:
     min_date_time = aggregates_date_time["min_date_time"]
     max_date_time = aggregates_date_time["max_date_time"]
 
+    if min_date_time is None or max_date_time is None:
+        return 0
+
     logger.warning(f"min_date_time: {min_date_time}")
     logger.warning(f"max_date_time: {max_date_time}")
 
