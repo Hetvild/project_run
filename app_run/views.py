@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum
@@ -26,6 +28,9 @@ from app_run.services import (
     read_excel_file,
     calculate_run_time_seconds,
 )
+
+# Создаём логгер для этого модуля
+logger = logging.getLogger(__name__)
 
 
 class ViewPagination(PageNumberPagination):
@@ -119,14 +124,18 @@ class StopRunAPIView(APIView):
 
         # Получаем список позиций из модели Position для текущего забега по полю run в виде словаря
         positions_list = Position.objects.filter(run=run).values()
-        print(f"positions_list: {positions_list}")
+        logger.warning(f"positions_list: {positions_list}")
 
         # Рассчитываем расстояние по полученным координатам
         distance = calculate_route_distance(positions_list)
 
         # Рассчитываем время по пройденным координатам
-        run_time_seconds = calculate_run_time_seconds(positions_list)
-        print(f"run_time_seconds: {run_time_seconds}")
+        run_time_seconds = calculate_run_time_seconds(run)
+        logger.warning(f"run_time_seconds: {run_time_seconds}")
+
+        if run_time_seconds:
+            run.run_time_seconds = run_time_seconds
+            run.save()
 
         # Обновляем поле distance в модели Run
         if distance:

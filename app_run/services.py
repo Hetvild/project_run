@@ -1,27 +1,38 @@
 import io
+import logging
 from typing import Any
 
 from django.db.models import QuerySet
+from django.db.models.aggregates import Min, Max
 from geopy.distance import geodesic
 from openpyxl import load_workbook
 
 from app_run.models import Position
 from app_run.serializers import CollectibleItemSerializer
 
+# Создаём логгер для этого модуля
+logger = logging.getLogger(__name__)
 
-def calculate_run_time_seconds(run_time: list[dict[str, Any]]) -> int:
 
-    if len(run_time) < 2:
-        raise ValueError(
-            "Список должен содержать минимум две точки для расчета расстояния."
-        )
+def calculate_run_time_seconds(run) -> int:
 
-    total_seconds: int = 0
+    # Получить список позиций из модели Position для текущего забега с агрегацией по полю date_time
+    # с минимальным и максимальным значением
+    aggregates_date_time = Position.objects.filter(run=run).aggregate(
+        min_date_time=Min("date_time"),
+        max_date_time=Max("date_time"),
+    )
 
-    for i in range(len(run_time) - 1):
-        print(f'{run_time[i]["date_time"]} - {run_time[i+1]["date_time"]}')
+    min_date_time = aggregates_date_time["min_date_time"]
+    max_date_time = aggregates_date_time["max_date_time"]
 
-    return total_seconds
+    logger.warning(f"min_date_time: {min_date_time}")
+    logger.warning(f"max_date_time: {max_date_time}")
+
+    duration = (max_date_time - min_date_time).total_seconds()
+    logger.warning(f"Затраченное время в секундах: {int(duration)}")
+
+    return int(duration)
 
 
 def calculate_route_distance(coordinates: QuerySet[Position, dict[str, Any]]) -> float:
