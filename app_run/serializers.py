@@ -35,7 +35,7 @@ class RunSerializer(serializers.ModelSerializer):
 class CouchAthleteSerializer(serializers.ModelSerializer):
     # Определяем вычисляемое поле для вывода типа пользователя
     type = serializers.SerializerMethodField()
-    runs_finished = serializers.SerializerMethodField()
+    # runs_finished = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -46,7 +46,7 @@ class CouchAthleteSerializer(serializers.ModelSerializer):
             "last_name",
             "first_name",
             "type",
-            "runs_finished",
+            # "runs_finished",
         )
 
     def get_type(self, obj) -> str:
@@ -55,9 +55,9 @@ class CouchAthleteSerializer(serializers.ModelSerializer):
         else:
             return "athlete"
 
-    def get_runs_finished(self, obj) -> int:
-        count = obj.run_set.filter(status="finished").count()
-        return count
+    # def get_runs_finished(self, obj) -> int:
+    #     count = obj.run_set.filter(status="finished").count()
+    #     return count
 
 
 class AthleteInfoSerializer(serializers.ModelSerializer):

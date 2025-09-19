@@ -2,6 +2,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -76,15 +77,21 @@ class CouchAthleteViewSet(viewsets.ReadOnlyModelViewSet):
             return CouchAthleteSerializer  # для /api/users/
 
     def get_queryset(self):
-        qs = self.queryset
-        type = self.request.query_params.get("type", None)
+        qs = User.objects.filter(is_superuser=False).annotate(
+            runs_finished=Count(
+                "run",  # обратная связь: User → Run (related_name="run")
+                filter=models.Q(run__status="finished"),  # фильтр по статусу
+            )
+        )
 
-        if type == "coach":
-            return qs.filter(is_staff=True)
-        elif type == "athlete":
-            return qs.filter(is_staff=False)
-        else:
-            return qs
+        type_param = self.request.query_params.get("type", None)
+
+        if type_param == "coach":
+            qs = qs.filter(is_staff=True)
+        elif type_param == "athlete":
+            qs = qs.filter(is_staff=False)
+
+        return qs
 
 
 class StartRunAPIView(APIView):
