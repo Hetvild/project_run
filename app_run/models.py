@@ -45,7 +45,7 @@ class Position(models.Model):
         longitude (FloatField): Долгота местоположения в десятичном формате.
         date_time (DateTimeField): Дата и время, когда была получена позиция.
         speed (FloatField): Скорость движения в метрах в секунду.
-        distance (FloatField): Расстояние от начала пробежки до текущей позиции.
+        distance (float): Расстояние от начала пробежки до текущей позиции в километрах.
     """
 
     run = models.ForeignKey(Run, on_delete=models.CASCADE, related_name="positions")
