@@ -134,7 +134,13 @@ class StopRunAPIView(APIView):
         logger.warning(f"positions_list: {positions_list}")
 
         # Рассчитываем расстояние по полученным координатам
-        distance = calculate_route_distance(positions_list)
+        # distance = calculate_route_distance(positions_list)
+        try:
+            distance = calculate_route_distance(positions_list)
+        except ValueError as e:
+            # Если точек меньше 2 — считаем расстояние = 0
+            distance = 0.0
+            logger.warning(f"Расчёт расстояния невозможен для забега {run.id}: {e}")
 
         # Рассчитываем время по пройденным координатам
         run_time_seconds = calculate_run_time_seconds(run)
