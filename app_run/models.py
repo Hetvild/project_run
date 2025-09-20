@@ -43,13 +43,17 @@ class Position(models.Model):
         run (IntegerField): Идентификатор пробежки, к которой относится данная позиция.
         latitude (FloatField): Широта местоположения в десятичном формате.
         longitude (FloatField): Долгота местоположения в десятичном формате.
+        date_time (DateTimeField): Дата и время, когда была получена позиция.
+        speed (FloatField): Скорость движения в метрах в секунду.
+        distance (FloatField): Расстояние от начала пробежки до текущей позиции.
     """
 
     run = models.ForeignKey(Run, on_delete=models.CASCADE, related_name="positions")
     latitude = models.FloatField()
     longitude = models.FloatField()
     date_time = models.DateTimeField(null=True, blank=True)
-    # date_time = models.DateTimeField(default="")
+    speed = models.FloatField(default=0, blank=True)
+    distance = models.FloatField(default=0, blank=True)
 
 
 class CollectibleItem(models.Model):
