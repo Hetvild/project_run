@@ -15,6 +15,7 @@ class Run(models.Model):
     athlete = models.ForeignKey(User, on_delete=models.CASCADE, related_name="run")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="init")
     distance = models.FloatField(default=0, blank=True)
+    speed = models.FloatField(default=0, blank=True)
     run_time_seconds = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
