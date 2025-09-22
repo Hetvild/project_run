@@ -56,6 +56,9 @@ class Position(models.Model):
     speed = models.FloatField(default=0, blank=True)
     distance = models.FloatField(default=0, blank=True)
 
+    def __str__(self):
+        return f"{str(self.run)} - {self.date_time}"
+
 
 class CollectibleItem(models.Model):
     """
