@@ -131,7 +131,15 @@ class PositionSerializer(serializers.ModelSerializer):
         """
 
         model = Position
-        fields = ("id", "run", "latitude", "longitude", "date_time")
+        fields = (
+            "id",
+            "run",
+            "latitude",
+            "longitude",
+            "date_time",
+            "speed",
+            "distance",
+        )
 
     def validate(self, data):
         run = data["run"]
