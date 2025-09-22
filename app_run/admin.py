@@ -13,6 +13,7 @@ class RunAdmin(admin.ModelAdmin):
         "status",
         "distance",
         "run_time_seconds",
+        "speed",
     )
 
 
@@ -28,7 +29,21 @@ class ChallengeAdmin(admin.ModelAdmin):
 
 @admin.register(Position)
 class PositionAdmin(admin.ModelAdmin):
-    list_display = ("id", "run", "latitude", "longitude", "date_time")
+    list_display = (
+        "id",
+        "run",
+        "latitude",
+        "longitude",
+        "date_time",
+        "speed",
+        "distance",
+    )
+
+    # Добавляем возможность редактировать поля speed и distance
+    list_editable = ("speed", "distance")
+
+    # Определяем, какие поля будут кликабельными для редактирования записи
+    list_display_links = ("run", "latitude", "longitude", "date_time")
 
 
 @admin.register(CollectibleItem)
