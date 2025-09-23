@@ -149,6 +149,11 @@ class PositionSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+
+        # Получаем последнюю позицию по времени
+        last_position = Position.objects.latest("date_time")
+        print(last_position)
+
         # Создаём позицию
         position = super().create(validated_data)
 

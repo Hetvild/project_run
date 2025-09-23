@@ -57,7 +57,7 @@ class Position(models.Model):
     distance = models.FloatField(default=0, blank=True)
 
     def __str__(self):
-        return f"{str(self.run)} - {self.date_time}"
+        return f"{self.pk} - {str(self.run)} - {self.date_time}"
 
 
 class CollectibleItem(models.Model):
@@ -71,7 +71,7 @@ class CollectibleItem(models.Model):
         longitude (float): Географическая долгота местоположения предмета. Индексировано для ускорения поиска.
         picture (str): URL изображения предмета. Максимальная длина — 500 символов.
         value (int): Числовое значение или цена предмета.
-        items (ManyToManyField): Связь "многие ко многим" с моделью пользователя (User),
+        athlete (ManyToManyField): Связь "многие ко многим" с моделью пользователя (User),
                                    указывает, какие спортсмены имеют данный предмет.
                                    related_name позволяет обращаться к предметам через пользователя как `collectible_items`.
     """
