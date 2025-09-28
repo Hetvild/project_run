@@ -85,51 +85,16 @@ class ChallengeSerializer(serializers.ModelSerializer):
 
 
 class PositionSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для модели Position, используемой для представления географических координат пробежки.
-
-    Основные функции:
-    - Валидация и сериализация данных широты и долготы.
-    - Обеспечение соответствия входных данных требованиям географических координат.
-    - Преобразование данных между форматом Python и JSON при работе с API.
-
-    Атрибуты:
-        latitude (FloatField): Поле широты. Значение должно находиться в диапазоне от -90 до 90.
-        longitude (FloatField): Поле долготы. Значение должно находиться в диапазоне от -180 до 180.
-    """
-
-    latitude = serializers.FloatField(
-        min_value=-90.0,
-        max_value=90.0,
-    )
-    longitude = serializers.FloatField(
-        min_value=-180.0,
-        max_value=180.0,
-    )
-
+    latitude = serializers.FloatField(min_value=-90.0, max_value=90.0)
+    longitude = serializers.FloatField(min_value=-180.0, max_value=180.0)
     date_time = serializers.DateTimeField(
-        input_formats=[
-            "%Y-%m-%dT%H:%M:%S.%f",
-        ],
+        input_formats=["%Y-%m-%dT%H:%M:%S.%f"],
         format="%Y-%m-%dT%H:%M:%S.%f",
         required=True,
         allow_null=False,
     )
 
     class Meta:
-        """
-        Вложенный класс Meta, задающий параметры сериализатора.
-
-        Атрибуты:
-            model (Model): Модель Django, к которой относится этот сериализатор — Position.
-            fields (tuple): Поля модели, которые будут включены в сериализацию.
-                Содержит:
-                - id: Уникальный идентификатор позиции.
-                - run: Идентификатор пробежки, к которой относится данная позиция.
-                - latitude: Широта.
-                - longitude: Долгота.
-        """
-
         model = Position
         fields = (
             "id",
@@ -143,44 +108,50 @@ class PositionSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         run = data["run"]
-
         if run.status != "in_progress":
-            raise serializers.ValidationError()
+            raise serializers.ValidationError("Run is not in progress.")
         return data
 
     def create(self, validated_data):
-        # Получаем последнюю позицию по времени
-        last_position = Position.objects.latest("date_time")
+        run = validated_data["run"]
 
-        # Проверяем что last_position не пустой
-        if last_position:
-            # Получаем текущею позицию
+        # Получаем все позиции для этой пробежки, отсортированные по времени
+        prev_positions = Position.objects.filter(run=run).order_by("date_time")
+
+        total_distance = 0.0  # начальное расстояние
+
+        # Если есть предыдущие позиции, считаем суммарное расстояние
+        if prev_positions.exists():
+            prev_pos = prev_positions.last()  # последняя из предыдущих
             current_point = (validated_data["latitude"], validated_data["longitude"])
-            # Получаем предыдущую позицию
-            last_point = (last_position.latitude, last_position.longitude)
-            # Вычисляем расстояние между точками в метрах
-            distance_meters = geodesic(current_point, last_point).meters
+            prev_point = (prev_pos.latitude, prev_pos.longitude)
 
-            # Получаем дату и время в последней позиции
-            last_date_time = last_position.date_time
+            # Расстояние от предыдущей позиции до текущей
+            segment_distance = geodesic(prev_point, current_point).kilometers
 
-            # Проверяем что last_date_time не пустой
-            if last_date_time:
-                # Получаем дату и время текущей позиции
-                current_date_time = validated_data.get("date_time")
-                # Вычисляем разницу между текущей и последней датой и временем в секундах
-                time_diff = (current_date_time - last_date_time).total_seconds()
-                print(f"time_diff: {time_diff}")
-                # Проверяем что time_diff не пустой
-                if time_diff > 0:
-                    speed = distance_meters / time_diff
-                    print(f"speed: {speed}")
-                else:
-                    speed = 0
+            # Суммируем с предыдущим расстоянием
+            total_distance = prev_pos.distance + segment_distance
 
-                validated_data["speed"] = round(speed, 2)
+        # Записываем итоговое расстояние в validated_data
+        validated_data["distance"] = round(total_distance, 3)
+
+        # Вычисляем скорость (если есть предыдущая позиция)
+        if prev_positions.exists():
+            prev_pos = prev_positions.last()
+            current_point = (validated_data["latitude"], validated_data["longitude"])
+            prev_point = (prev_pos.latitude, prev_pos.longitude)
+
+            distance_meters = geodesic(prev_point, current_point).meters
+            time_diff = (
+                validated_data["date_time"] - prev_pos.date_time
+            ).total_seconds()
+
+            if time_diff > 0:
+                speed = distance_meters / time_diff
             else:
-                validated_data["speed"] = 0
+                speed = 0
+
+            validated_data["speed"] = round(speed, 2)
 
         # Создаём позицию
         position = super().create(validated_data)
@@ -196,13 +167,11 @@ class PositionSerializer(serializers.ModelSerializer):
         athlete = position.run.athlete
         current_point = (position.latitude, position.longitude)
 
-        # Ищем все предметы
         for item in CollectibleItem.objects.all():
             item_point = (item.latitude, item.longitude)
             distance = geodesic(current_point, item_point).meters
 
             if distance < 100:
-                # Добавляем атлета к предмету (ManyToMany)
                 item.athlete.add(athlete)
 
 
