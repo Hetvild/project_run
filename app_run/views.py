@@ -163,7 +163,10 @@ class StopRunAPIView(APIView):
             run.distance = distance
             run.save()
 
-        # avarage_speed = Position.objects.filter(run=run).aggregate(Avg("distance"))["distance__avg"]
+        avarage_speed = Position.objects.filter(run=run).aggregate(Avg("speed"))[
+            "speed__avg"
+        ]
+        print(f"avarage_speed: {avarage_speed}")
 
         count = Run.objects.filter(athlete=athlete, status="finished").aggregate(
             Count("athlete")
