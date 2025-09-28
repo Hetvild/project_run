@@ -133,7 +133,7 @@ class PositionSerializer(serializers.ModelSerializer):
             total_distance = prev_pos.distance + segment_distance
 
         # Записываем итоговое расстояние в validated_data
-        validated_data["distance"] = round(total_distance, 3)
+        validated_data["distance"] = round(total_distance, 2)
 
         # Вычисляем скорость (если есть предыдущая позиция)
         if prev_positions.exists():

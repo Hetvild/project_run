@@ -131,6 +131,13 @@ class StopRunAPIView(APIView):
 
         # Получаем список позиций из модели Position для текущего забега по полю run в виде словаря
         positions_list = Position.objects.filter(run=run).values()
+        # Получаем среднюю скорость всех позиций
+        if positions_list:
+            speed = sum([position["speed"] for position in positions_list]) / len(
+                positions_list
+            )
+            run.speed = speed
+            run.save()
         logger.warning(f"positions_list: {positions_list}")
 
         # Рассчитываем расстояние по полученным координатам
