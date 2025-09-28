@@ -149,11 +149,29 @@ class PositionSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-
         # Получаем последнюю позицию по времени
         last_position = Position.objects.latest("date_time")
-        print(last_position)
+        if last_position:
+            current_point = (validated_data["latitude"], validated_data["longitude"])
+            last_point = (last_position.latitude, last_position.longitude)
+            distance_meters = geodesic(current_point, last_point).meters
 
+            last_date_time = last_position.date_time
+
+            # Получаем текущую позицию которую создаем
+            current_position = validated_data
+            current_date_time = current_position.get("date_time")
+            print(current_position.get("date_time"))
+
+            time_diff = (current_date_time - last_date_time).total_seconds()
+            print(f"time_diff: {time_diff}")
+            if time_diff > 0:
+                speed = distance_meters / time_diff
+                print(f"speed: {speed}")
+            else:
+                speed = 0
+
+            validated_data["speed"] = round(speed, 2)
         # Создаём позицию
         position = super().create(validated_data)
 

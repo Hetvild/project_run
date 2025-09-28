@@ -12,7 +12,8 @@ Content-Type: application/json
 {
   "run": 14,
   "latitude": 56.3456,
-  "longitude": 77.2222123
+  "longitude": 77.2222123,
+  "date_time": "2025-09-28T21:50:20.123412"
 }
 
 ### POST запрос для создания записи позиции в модели Position с датой и временем, для забегов в статусе in_progres
@@ -21,11 +22,10 @@ Content-Type: application/json
 
 {
   "run": 24,
-  "latitude": "88.1111",
-  "longitude": "77.2222",
-  "date_time": "2025-09-23T21:37:19.123412",
-  "speed": 14.32,
-  "distance": 23.43
+  "latitude": "56.3446",
+  "longitude": "77.22230",
+  "date_time": "2025-09-28T21:50:20.123412",
+  "distance": 55.44
 }
 
 ### DELETE запрос на удаление записанной позиции Position
