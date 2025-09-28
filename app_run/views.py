@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Count, Sum
+from django.db.models.aggregates import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -131,17 +132,8 @@ class StopRunAPIView(APIView):
 
         # Получаем список позиций из модели Position для текущего забега по полю run в виде словаря
         positions_list = Position.objects.filter(run=run).values()
-        # Получаем среднюю скорость всех позиций
-        if positions_list:
-            speed = sum([position["speed"] for position in positions_list]) / len(
-                positions_list
-            )
-            run.speed = speed
-            run.save()
-        logger.warning(f"positions_list: {positions_list}")
 
         # Рассчитываем расстояние по полученным координатам
-        # distance = calculate_route_distance(positions_list)
         try:
             distance = calculate_route_distance(positions_list)
         except ValueError as e:
@@ -153,6 +145,15 @@ class StopRunAPIView(APIView):
         run_time_seconds = calculate_run_time_seconds(run)
         logger.warning(f"run_time_seconds: {run_time_seconds}")
 
+        # Получаем среднюю скорость всех позиций
+        if positions_list:
+            speed = sum([position["speed"] for position in positions_list]) / len(
+                positions_list
+            )
+            run.speed = speed
+            run.save()
+        logger.warning(f"positions_list: {positions_list}")
+
         if run_time_seconds:
             run.run_time_seconds = run_time_seconds
             run.save()
@@ -161,6 +162,8 @@ class StopRunAPIView(APIView):
         if distance:
             run.distance = distance
             run.save()
+
+        # avarage_speed = Position.objects.filter(run=run).aggregate(Avg("distance"))["distance__avg"]
 
         count = Run.objects.filter(athlete=athlete, status="finished").aggregate(
             Count("athlete")
