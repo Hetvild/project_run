@@ -151,27 +151,37 @@ class PositionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Получаем последнюю позицию по времени
         last_position = Position.objects.latest("date_time")
+
+        # Проверяем что last_position не пустой
         if last_position:
+            # Получаем текущею позицию
             current_point = (validated_data["latitude"], validated_data["longitude"])
+            # Получаем предыдущую позицию
             last_point = (last_position.latitude, last_position.longitude)
+            # Вычисляем расстояние между точками в метрах
             distance_meters = geodesic(current_point, last_point).meters
 
+            # Получаем дату и время в последней позиции
             last_date_time = last_position.date_time
 
-            # Получаем текущую позицию которую создаем
-            current_position = validated_data
-            current_date_time = current_position.get("date_time")
-            print(current_position.get("date_time"))
+            # Проверяем что last_date_time не пустой
+            if last_date_time:
+                # Получаем дату и время текущей позиции
+                current_date_time = validated_data.get("date_time")
+                # Вычисляем разницу между текущей и последней датой и временем в секундах
+                time_diff = (current_date_time - last_date_time).total_seconds()
+                print(f"time_diff: {time_diff}")
+                # Проверяем что time_diff не пустой
+                if time_diff > 0:
+                    speed = distance_meters / time_diff
+                    print(f"speed: {speed}")
+                else:
+                    speed = 0
 
-            time_diff = (current_date_time - last_date_time).total_seconds()
-            print(f"time_diff: {time_diff}")
-            if time_diff > 0:
-                speed = distance_meters / time_diff
-                print(f"speed: {speed}")
+                validated_data["speed"] = round(speed, 2)
             else:
-                speed = 0
+                validated_data["speed"] = 0
 
-            validated_data["speed"] = round(speed, 2)
         # Создаём позицию
         position = super().create(validated_data)
 
