@@ -190,6 +190,14 @@ class StopRunAPIView(APIView):
                 full_name="Пробеги 50 километров!",
             )
 
+        # Если атлет пробежал за 10 минут или быстрее и дистанция была 2 км или больше -
+        # создаем челлендж "Челлендж 2 км за 10 минут"
+        if run_time_seconds <= 600 and distance >= 2 and run.status == "finished":
+            Challenge.objects.get_or_create(
+                athlete=athlete,
+                full_name="Челлендж 2 км за 10 минут",
+            )
+
         serializer = RunSerializer(run)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
