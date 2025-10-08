@@ -83,3 +83,38 @@ class CollectibleItem(models.Model):
     picture = models.URLField(max_length=500)
     value = models.IntegerField()
     athlete = models.ManyToManyField(User, related_name="items")
+
+
+class Subscribe(models.Model):
+    """
+    Модель организует подписку атлетов на своих тренеров
+    athlete - должен возвращать только запись пользователь у которых is_staff == False
+    coach - должен возвращать только запись пользователь у которых is_staff == True
+    У атлетов может быть много тренеров, а у тренеров много атлетов
+    Дублирование записей не допускается
+    """
+
+    athlete = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="athlete_subscriptions",
+        limit_choices_to={"is_staff": False},
+        db_index=True,
+        verbose_name="Атлет",
+    )
+    coach = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="coach_subscriptions",
+        limit_choices_to={"is_staff": True},
+        db_index=True,
+        verbose_name="Тренер",
+    )
+
+    def __str__(self):
+        return f"{self.athlete.username} - {self.coach.username}"
+
+    class Meta:
+        unique_together = ("athlete", "coach")
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
