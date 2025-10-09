@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -114,7 +115,26 @@ class Subscribe(models.Model):
     def __str__(self):
         return f"{self.athlete.username} - {self.coach.username}"
 
+    def clean(self):
+        """
+        Проверяет, что атлет не является тренером (is_staff=False),
+        и тренер не является атлетом (is_staff=True).
+        """
+        if self.athlete.is_staff:
+            raise ValidationError("Атлет не должен быть сотрудником")
+        if not self.coach.is_staff:
+            raise ValidationError("Тренер должен быть сотрудником")
+
+    def save(self, *args, **kwargs):
+        """
+        Вызывает clean() перед сохранением, чтобы гарантировать
+        корректность данных перед записью в БД.
+        """
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         unique_together = ("athlete", "coach")
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
+        db_table = "subscribe"
