@@ -329,3 +329,18 @@ class UploadFileAPIView(APIView):
 
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class SubscribeAPIView(APIView):
+    """
+    class обрабатывает данные с url: api/subscribe_to_coach/<int:id>/
+    В url должен передаваться id Тренера
+    В теле запроса передается id Атлета в виде: {'athlete': 123}
+    """
+
+    def post(self, request: Request, id: int):
+
+        logger.warning(f"Запрос на подписку на тренера: {id}")
+        logger.warning(f"Тело запроса: {request.data}")
+
+        return Response({"message": "Подписка оформлена"}, status=status.HTTP_200_OK)

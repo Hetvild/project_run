@@ -1,0 +1,7 @@
+### POST запрос передает id тренера и в теле запроса передает id атлета
+POST http://127.0.0.1:8000/api/subscribe_to_coach/23/
+Content-Type: application/json
+
+{
+  "athlete": 5
+}
