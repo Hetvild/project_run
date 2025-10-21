@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Q
 from django.db.models.aggregates import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -15,7 +15,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app_run.models import Run, AthleteInfo, Challenge, Position, CollectibleItem
+from app_run.models import (
+    Run,
+    AthleteInfo,
+    Challenge,
+    Position,
+    CollectibleItem,
+    Subscribe,
+)
 from app_run.serializers import (
     RunSerializer,
     CouchAthleteSerializer,
@@ -339,7 +346,35 @@ class SubscribeAPIView(APIView):
     """
 
     def post(self, request: Request, id: int):
+        # Проверяем что получили данные по тренеру или возвращаем 404
+        coach_info = get_object_or_404(User, pk=id, is_staff=True, is_superuser=False)
+        print(f"Данные по тренеру {coach_info.pk}")
+        #
+        athlete_info = User.objects.filter(
+            pk=request.data["athlete"], is_staff=False, is_superuser=False
+        ).values("id")
+        print(f"Данные по атлету {athlete_info}")
 
+        # Получаем данные подписчиков, для проверки, существует ли подписка на пару coach + athlete
+        subscribe_data = Subscribe.objects.filter(
+            coach_id=id, athlete_id=request.data["athlete"]
+        )
+        if subscribe_data:
+            print(f"Subscribe data: {subscribe_data}")
+        else:
+            print("Подписка на тренеров и пользователей не найдена")
+
+        # Получаем данные всех пользователей для дальнейшей фильтрации
+        queryset = User.objects.filter(
+            is_superuser=False,
+        )
+        for user in queryset:
+            if user.is_staff is True:
+                print(f"Пользователь {user.username} тренер")
+            elif user.is_staff is False:
+                print(f"Пользователь {user.username} атлет")
+
+        logger.warning(f"athlete_data: {queryset}")
         logger.warning(f"Запрос на подписку на тренера: {id}")
         logger.warning(f"Тело запроса: {request.data}")
 
