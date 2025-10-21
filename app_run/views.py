@@ -347,7 +347,13 @@ class SubscribeAPIView(APIView):
 
     def post(self, request: Request, id: int):
         # Проверяем что получили данные по тренеру или возвращаем 404
-        coach = get_object_or_404(User, pk=id, is_staff=True, is_superuser=False)
+        # coach = get_object_or_404(User, pk=id, is_staff=True, is_superuser=False)
+        try:
+            coach = User.objects.get(id=id, is_staff=True, is_superuser=False)
+            logger.warning(f"athlete_data: {coach}")
+
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         # Получаем данные по athlete через get, чтобы поймать исключение, если athlete не найден, то возвращаем код 400
         try:
