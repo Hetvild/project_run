@@ -21,6 +21,7 @@ from app_run.models import (
     Challenge,
     Position,
     CollectibleItem,
+    Subscribe,
 )
 from app_run.serializers import (
     RunSerializer,
@@ -353,7 +354,7 @@ class SubscribeAPIView(APIView):
             athlete_id = User.objects.get(
                 id=int(request.data.get("athlete")), is_staff=False, is_superuser=False
             )
-            logger.warning(f"athlete_data: {athlete_id}")
+            logger.warning(f"athlete_data: {athlete_id.id}")
 
         except User.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -361,6 +362,13 @@ class SubscribeAPIView(APIView):
         logger.warning(f"Запрос на подписку на тренера: {id}")
         logger.warning(f"Тело запроса: {request.data}")
 
+        if coach_id.coach_subscriptions.filter(athlete_id=athlete_id).exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
+        # Делаем запись в модель Subscribe
+        Subscribe.objects.create(
+            coach_id=coach_id.id,
+            athlete_id=athlete_id.id,
+        )
 
         return Response({"message": "Подписка оформлена"}, status=status.HTTP_200_OK)
