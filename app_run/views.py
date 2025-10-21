@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Count, Sum, Q
+from django.db.models import Count, Sum
 from django.db.models.aggregates import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -21,7 +21,6 @@ from app_run.models import (
     Challenge,
     Position,
     CollectibleItem,
-    Subscribe,
 )
 from app_run.serializers import (
     RunSerializer,
@@ -347,35 +346,21 @@ class SubscribeAPIView(APIView):
 
     def post(self, request: Request, id: int):
         # Проверяем что получили данные по тренеру или возвращаем 404
-        coach_info = get_object_or_404(User, pk=id, is_staff=True, is_superuser=False)
-        print(f"Данные по тренеру {coach_info.pk}")
-        #
-        athlete_info = User.objects.filter(
-            pk=request.data["athlete"], is_staff=False, is_superuser=False
-        ).values("id")
-        print(f"Данные по атлету {athlete_info}")
+        coach_id = get_object_or_404(User, pk=id, is_staff=True, is_superuser=False)
 
-        # Получаем данные подписчиков, для проверки, существует ли подписка на пару coach + athlete
-        subscribe_data = Subscribe.objects.filter(
-            coach_id=id, athlete_id=request.data["athlete"]
-        )
-        if subscribe_data:
-            print(f"Subscribe data: {subscribe_data}")
-        else:
-            print("Подписка на тренеров и пользователей не найдена")
+        # Получаем данные по athlete через get, чтобы поймать исключение, если athlete не найден, то возвращаем код 400
+        try:
+            athlete_id = User.objects.get(
+                id=int(request.data.get("athlete")), is_staff=False, is_superuser=False
+            )
+            logger.warning(f"athlete_data: {athlete_id}")
 
-        # Получаем данные всех пользователей для дальнейшей фильтрации
-        queryset = User.objects.filter(
-            is_superuser=False,
-        )
-        for user in queryset:
-            if user.is_staff is True:
-                print(f"Пользователь {user.username} тренер")
-            elif user.is_staff is False:
-                print(f"Пользователь {user.username} атлет")
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        logger.warning(f"athlete_data: {queryset}")
         logger.warning(f"Запрос на подписку на тренера: {id}")
         logger.warning(f"Тело запроса: {request.data}")
+
+
 
         return Response({"message": "Подписка оформлена"}, status=status.HTTP_200_OK)
