@@ -3,5 +3,5 @@ POST http://127.0.0.1:8000/api/subscribe_to_coach/2/
 Content-Type: application/json
 
 {
-  "athlete": 6
+  "athlete": 7
 }

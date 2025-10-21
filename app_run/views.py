@@ -347,14 +347,14 @@ class SubscribeAPIView(APIView):
 
     def post(self, request: Request, id: int):
         # Проверяем что получили данные по тренеру или возвращаем 404
-        coach_id = get_object_or_404(User, pk=id, is_staff=True, is_superuser=False)
+        coach = get_object_or_404(User, pk=id, is_staff=True, is_superuser=False)
 
         # Получаем данные по athlete через get, чтобы поймать исключение, если athlete не найден, то возвращаем код 400
         try:
-            athlete_id = User.objects.get(
+            athlete = User.objects.get(
                 id=int(request.data.get("athlete")), is_staff=False, is_superuser=False
             )
-            logger.warning(f"athlete_data: {athlete_id.id}")
+            logger.warning(f"athlete_data: {athlete.id}")
 
         except User.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -362,13 +362,15 @@ class SubscribeAPIView(APIView):
         logger.warning(f"Запрос на подписку на тренера: {id}")
         logger.warning(f"Тело запроса: {request.data}")
 
-        if coach_id.coach_subscriptions.filter(athlete_id=athlete_id).exists():
+        if coach.coach_subscriptions.filter(
+            athlete_id=athlete, coach_id=coach
+        ).exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         # Делаем запись в модель Subscribe
         Subscribe.objects.create(
-            coach_id=coach_id.id,
-            athlete_id=athlete_id.id,
+            coach_id=coach.id,
+            athlete_id=athlete.id,
         )
 
         return Response({"message": "Подписка оформлена"}, status=status.HTTP_200_OK)
