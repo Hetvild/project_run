@@ -8,14 +8,13 @@ from geopy.distance import geodesic
 from openpyxl import load_workbook
 
 from app_run.models import Position
-from app_run.serializers import CollectibleItemSerializer
+from app_run.serializers.collectible import CollectibleItemSerializer
 
 # Создаём логгер для этого модуля
 logger = logging.getLogger(__name__)
 
 
 def calculate_run_time_seconds(run) -> int:
-
     # Получить список позиций из модели Position для текущего забега с агрегацией по полю date_time
     # с минимальным и максимальным значением
     aggregates_date_time = Position.objects.filter(run=run).aggregate(
