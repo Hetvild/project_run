@@ -51,6 +51,30 @@ class CouchAthleteItemsSerializer(CouchAthleteSerializer):
         fields = CouchAthleteSerializer.Meta.fields + ("items",)
 
 
+class CoachItemSerializer(CouchAthleteSerializer):
+    """
+    Сериалайзер, который добавляет поле athletes со списком его Атлетов
+    """
+
+    athletes = CouchAthleteSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = CouchAthleteSerializer.Meta.fields + ("athletes",)
+
+
+class AthleteItemSerializer(CouchAthleteSerializer):
+    """
+    Сериалайзер, который добавляет поле coach со списком его Атлетов
+    """
+
+    coach = CouchAthleteSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = CouchAthleteSerializer.Meta.fields + ("coach",)
+
+
 class AthleteInfoSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(source="user_id.id", read_only=True)
 

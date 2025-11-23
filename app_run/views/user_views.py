@@ -29,7 +29,16 @@ class CouchAthleteViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_class(self):
         if self.action == "retrieve":  # для /api/users/{id}/
+            # Добавляем проверку, кто указан в параметре {id}, Атлет или Тренер
+            # if self.request.user.is_staff:
+
+            # получаем объект пользователя
+            viewed_user = self.get_object()
+
+            # проверяем, что пользователь Атлет или Тренер
+            user_staff = viewed_user.is_staff
             return CouchAthleteItemsSerializer
+
         else:
             return CouchAthleteSerializer  # для /api/users/
 
