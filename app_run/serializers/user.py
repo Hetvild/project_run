@@ -56,14 +56,16 @@ class CoachWithAthletesSerializer(CouchAthleteSerializer):
     Для ТРЕНЕРА: добавляет поле athletes — список ID атлетов
     """
 
-    athletes = serializers.PrimaryKeyRelatedField(
-        many=True,
-        read_only=True,
-        source="coach_subscriptions",  # related_name из модели Subscribe.coach
-    )
+    athletes = serializers.SerializerMethodField()
 
     class Meta(CouchAthleteSerializer.Meta):
         fields = CouchAthleteSerializer.Meta.fields + ("athletes",)
+
+    def get_athletes(self, obj):
+        # Получаем список ID атлетов, подписанных на этого тренера
+        return list(
+            Subscribe.objects.filter(coach=obj).values_list("athlete_id", flat=True)
+        )
 
 
 class AthleteWithCoachSerializer(CouchAthleteSerializer):
