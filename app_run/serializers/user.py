@@ -76,12 +76,12 @@ class AthleteWithCoachSerializer(CouchAthleteSerializer):
     class Meta(CouchAthleteSerializer.Meta):
         fields = CouchAthleteSerializer.Meta.fields + ("coach",)
 
-        def get_coach(self, obj):
-            # Ищем первую подписку атлета на тренера
-            subscription = Subscribe.objects.filter(athlete=obj).first()
-            if subscription:
-                return subscription.coach_id  # возвращаем только ID
-            return None
+    def get_coach(self, obj):
+        # Ищем первую подписку атлета на тренера
+        subscription = Subscribe.objects.filter(athlete=obj).first()
+        if subscription:
+            return subscription.coach_id  # возвращаем только ID
+        return None
 
 
 class AthleteInfoSerializer(serializers.ModelSerializer):
