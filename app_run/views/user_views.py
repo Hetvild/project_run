@@ -14,6 +14,8 @@ from app_run.serializers import (
     CouchAthleteSerializer,
     CouchAthleteItemsSerializer,
     AthleteInfoSerializer,
+    AthleteWithCoachSerializer,
+    CoachWithAthletesSerializer,
 )
 from app_run.views.run_views import ViewPagination
 
@@ -29,16 +31,17 @@ class CouchAthleteViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_class(self):
         if self.action == "retrieve":  # для /api/users/{id}/
-            # Добавляем проверку, кто указан в параметре {id}, Атлет или Тренер
-            # if self.request.user.is_staff:
+            # Для retrieve — сначала получаем объект
+            user_being_viewed = self.get_object()
 
-            # получаем объект пользователя
-            viewed_user = self.get_object()
+            if user_being_viewed.is_staff:
+                # Это тренер → возвращаем сериализатор с athletes
+                return CoachWithAthletesSerializer
+            else:
+                # Это атлет → возвращаем сериализатор с coach
+                return AthleteWithCoachSerializer
 
-            # проверяем, что пользователь Атлет или Тренер
-            user_staff = viewed_user.is_staff
             return CouchAthleteItemsSerializer
-
         else:
             return CouchAthleteSerializer  # для /api/users/
 

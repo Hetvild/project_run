@@ -4,6 +4,8 @@ from .user import (
     CouchAthleteSerializer,
     CouchAthleteItemsSerializer,
     AthleteInfoSerializer,
+    AthleteWithCoachSerializer,
+    CoachWithAthletesSerializer,
 )
 from .run import RunSerializer
 from .collectible import CollectibleItemSerializer
@@ -20,4 +22,6 @@ __all__ = [
     "CollectibleItemSerializer",
     "ChallengeSerializer",
     "PositionSerializer",
+    "AthleteWithCoachSerializer",
+    "CoachWithAthletesSerializer",
 ]

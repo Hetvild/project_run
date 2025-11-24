@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from app_run.models import AthleteInfo
+from app_run.models import AthleteInfo, Subscribe
 from app_run.serializers.collectible import CollectibleItemSerializer
 
 
@@ -51,28 +51,37 @@ class CouchAthleteItemsSerializer(CouchAthleteSerializer):
         fields = CouchAthleteSerializer.Meta.fields + ("items",)
 
 
-class CoachItemSerializer(CouchAthleteSerializer):
+class CoachWithAthletesSerializer(CouchAthleteSerializer):
     """
-    Сериалайзер, который добавляет поле athletes со списком его Атлетов
+    Для ТРЕНЕРА: добавляет поле athletes — список ID атлетов
     """
 
-    athletes = CouchAthleteSerializer(many=True, read_only=True)
+    athletes = serializers.PrimaryKeyRelatedField(
+        many=True,
+        read_only=True,
+        source="coach_subscriptions",  # related_name из модели Subscribe.coach
+    )
 
-    class Meta:
-        model = User
+    class Meta(CouchAthleteSerializer.Meta):
         fields = CouchAthleteSerializer.Meta.fields + ("athletes",)
 
 
-class AthleteItemSerializer(CouchAthleteSerializer):
+class AthleteWithCoachSerializer(CouchAthleteSerializer):
     """
     Сериалайзер, который добавляет поле coach со списком его Атлетов
     """
 
-    coach = CouchAthleteSerializer(many=True, read_only=True)
+    coach = serializers.SerializerMethodField()
 
-    class Meta:
-        model = User
+    class Meta(CouchAthleteSerializer.Meta):
         fields = CouchAthleteSerializer.Meta.fields + ("coach",)
+
+        def get_coach(self, obj):
+            # Ищем первую подписку атлета на тренера
+            subscription = Subscribe.objects.filter(athlete=obj).first()
+            if subscription:
+                return subscription.coach_id  # возвращаем только ID
+            return None
 
 
 class AthleteInfoSerializer(serializers.ModelSerializer):
