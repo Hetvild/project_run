@@ -1,11 +1,11 @@
-from .run_views import RunViewSet, StopRunAPIView, StartRunAPIView
-from .user_views import CouchAthleteViewSet, AthleteInfoAPIView
-from .challenge_views import ChallengeViewSet
-from .position_views import PositionViewSet
+from .challenge_views import ChallengeViewSet, ChallengeSummaryViewSet
 from .collectible_views import CollectibleItemViewSet
-from .subscription_views import SubscribeAPIView
 from .file_views import UploadFileAPIView
 from .misc_views import company_details
+from .position_views import PositionViewSet
+from .run_views import RunViewSet, StopRunAPIView, StartRunAPIView
+from .subscription_views import SubscribeAPIView
+from .user_views import CouchAthleteViewSet, AthleteInfoAPIView
 
 __all__ = [
     "RunViewSet",
@@ -19,4 +19,5 @@ __all__ = [
     "SubscribeAPIView",
     "UploadFileAPIView",
     "company_details",
+    "ChallengeSummaryViewSet",
 ]

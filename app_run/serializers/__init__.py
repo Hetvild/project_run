@@ -1,4 +1,8 @@
 # Импортируем функции из пакетов
+from .challenge import ChallengeSerializer, ChallengeSummarySerializer
+from .collectible import CollectibleItemSerializer
+from .position import PositionSerializer
+from .run import RunSerializer
 from .user import (
     UserSerializer,
     CouchAthleteSerializer,
@@ -7,10 +11,6 @@ from .user import (
     AthleteWithCoachSerializer,
     CoachWithAthletesSerializer,
 )
-from .run import RunSerializer
-from .collectible import CollectibleItemSerializer
-from .challenge import ChallengeSerializer
-from .position import PositionSerializer
 
 # Указываем какие имена импортируем
 __all__ = [
@@ -24,4 +24,5 @@ __all__ = [
     "PositionSerializer",
     "AthleteWithCoachSerializer",
     "CoachWithAthletesSerializer",
+    "ChallengeSummarySerializer",
 ]

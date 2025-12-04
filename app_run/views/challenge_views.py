@@ -1,9 +1,9 @@
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from app_run.models import Challenge
-from app_run.serializers import ChallengeSerializer
+from app_run.serializers import ChallengeSerializer, ChallengeSummarySerializer
 
 
 class ChallengeViewSet(APIView):
@@ -28,3 +28,8 @@ class ChallengeViewSet(APIView):
 
         serializer = ChallengeSerializer(challenges, many=True)
         return Response(serializer.data)
+
+
+class ChallengeSummaryViewSet(generics.ListAPIView):
+    queryset = Challenge.objects.all()
+    serializer_class = ChallengeSummarySerializer

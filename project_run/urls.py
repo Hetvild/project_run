@@ -31,6 +31,7 @@ from app_run.views import (
     CollectibleItemViewSet,
     UploadFileAPIView,
     SubscribeAPIView,
+    ChallengeSummaryViewSet,
 )
 
 router = routers.DefaultRouter()
@@ -46,6 +47,11 @@ urlpatterns = [
     path("api/runs/<int:run_id>/stop/", StopRunAPIView.as_view()),
     path("api/athlete_info/<int:user_id>/", AthleteInfoAPIView.as_view()),
     path("api/challenges/", ChallengeViewSet.as_view(), name="challenges"),
+    path(
+        "api/challenges_summary/",
+        ChallengeSummaryViewSet.as_view(),
+        name="challenges_summary",
+    ),
     path("api/upload_file/", UploadFileAPIView.as_view(), name="upload_file"),
     path(
         "api/subscribe_to_coach/<int:id>/",
