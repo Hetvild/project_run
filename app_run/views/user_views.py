@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Count
+from django.db.models.aggregates import Avg, Count
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -11,8 +11,8 @@ from rest_framework.views import APIView
 
 from app_run.models import AthleteInfo
 from app_run.serializers import (
-    CouchAthleteSerializer,
-    CouchAthleteItemsSerializer,
+    CoachAthleteSerializer,
+    CoachAthleteItemsSerializer,
     AthleteInfoSerializer,
     AthleteWithCoachSerializer,
     CoachWithAthletesSerializer,
@@ -22,7 +22,7 @@ from app_run.views.run_views import ViewPagination
 
 class CouchAthleteViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.filter(is_superuser=False)
-    serializer_class = CouchAthleteSerializer
+    serializer_class = CoachAthleteSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ["date_joined"]
     search_fields = ["first_name", "last_name"]
@@ -41,16 +41,14 @@ class CouchAthleteViewSet(viewsets.ReadOnlyModelViewSet):
                 # Это атлет → возвращаем сериализатор с coach
                 return AthleteWithCoachSerializer
 
-            return CouchAthleteItemsSerializer
+            return CoachAthleteItemsSerializer
         else:
-            return CouchAthleteSerializer  # для /api/users/
+            return CoachAthleteSerializer  # для /api/users/
 
     def get_queryset(self):
         qs = User.objects.filter(is_superuser=False).annotate(
-            runs_finished=Count(
-                "run",  # обратная связь: User → Run (related_name="run")
-                filter=models.Q(run__status="finished"),  # фильтр по статусу
-            )
+            runs_finished=Count("run", filter=models.Q(run__status="finished")),
+            rating=Avg("received_ratings__rating"),
         )
 
         type_param = self.request.query_params.get("type", None)

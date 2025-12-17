@@ -33,6 +33,7 @@ from app_run.views import (
     SubscribeAPIView,
     ChallengeSummaryViewSet,
 )
+from app_run.views.rating_views import RateCoachApiView
 
 router = routers.DefaultRouter()
 router.register("api/runs", RunViewSet)
@@ -51,6 +52,9 @@ urlpatterns = [
         "api/challenges_summary/",
         ChallengeSummaryViewSet.as_view(),
         name="challenges_summary",
+    ),
+    path(
+        "api/rate_coach/<int:coach_id>/", RateCoachApiView.as_view(), name="rate_coach"
     ),
     path("api/upload_file/", UploadFileAPIView.as_view(), name="upload_file"),
     path(

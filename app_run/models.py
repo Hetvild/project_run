@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -138,3 +139,28 @@ class Subscribe(models.Model):
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
         db_table = "subscribe"
+
+
+class CoachRating(models.Model):
+    """
+    Модель для хранения рейтинга тренеров
+    """
+
+    athlete = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        limit_choices_to={"is_staff": False},
+        related_name="given_ratings",
+    )
+    coach = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        limit_choices_to={"is_staff": True},
+        related_name="received_ratings",
+    )
+    rating = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+
+    class Meta:
+        unique_together = ("athlete", "coach")

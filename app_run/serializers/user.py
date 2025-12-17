@@ -11,10 +11,11 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "last_name", "first_name")
 
 
-class CouchAthleteSerializer(serializers.ModelSerializer):
+class CoachAthleteSerializer(serializers.ModelSerializer):
     # Определяем вычисляемое поле для вывода типа пользователя
     type = serializers.SerializerMethodField()
     runs_finished = serializers.ReadOnlyField()
+    rating = serializers.FloatField(read_only=True)
 
     class Meta:
         model = User
@@ -26,6 +27,7 @@ class CouchAthleteSerializer(serializers.ModelSerializer):
             "first_name",
             "type",
             "runs_finished",
+            "rating",
         )
 
     def get_type(self, obj) -> str:
@@ -35,7 +37,7 @@ class CouchAthleteSerializer(serializers.ModelSerializer):
             return "athlete"
 
 
-class CouchAthleteItemsSerializer(CouchAthleteSerializer):
+class CoachAthleteItemsSerializer(CoachAthleteSerializer):
     """
     Сериалайзер, который возвращает пользователя и его предметы из модели User и CollectibleItem
     из связи many-to-many athlete = models.ManyToManyField(User, related_name="collectible_items")
@@ -48,18 +50,18 @@ class CouchAthleteItemsSerializer(CouchAthleteSerializer):
         # Переопределяем модель для CouchAthleteSerializer
         model = User
         # Добавляем поле items к полям CouchAthleteSerializer
-        fields = CouchAthleteSerializer.Meta.fields + ("items",)
+        fields = CoachAthleteSerializer.Meta.fields + ("items",)
 
 
-class CoachWithAthletesSerializer(CouchAthleteSerializer):
+class CoachWithAthletesSerializer(CoachAthleteSerializer):
     """
     Для ТРЕНЕРА: добавляет поле athletes — список ID атлетов
     """
 
     athletes = serializers.SerializerMethodField()
 
-    class Meta(CouchAthleteSerializer.Meta):
-        fields = CouchAthleteSerializer.Meta.fields + ("athletes",)
+    class Meta(CoachAthleteSerializer.Meta):
+        fields = CoachAthleteSerializer.Meta.fields + ("athletes",)
 
     def get_athletes(self, obj):
         # Получаем список ID атлетов, подписанных на этого тренера
@@ -68,15 +70,16 @@ class CoachWithAthletesSerializer(CouchAthleteSerializer):
         )
 
 
-class AthleteWithCoachSerializer(CouchAthleteSerializer):
+class AthleteWithCoachSerializer(CoachAthleteSerializer):
     """
     Сериалайзер, который добавляет поле coach со списком его Атлетов
     """
 
     coach = serializers.SerializerMethodField()
+    rating = serializers.FloatField(read_only=True)
 
-    class Meta(CouchAthleteSerializer.Meta):
-        fields = CouchAthleteSerializer.Meta.fields + ("coach",)
+    class Meta(CoachAthleteSerializer.Meta):
+        fields = CoachAthleteSerializer.Meta.fields + ("coach",)
 
     def get_coach(self, obj):
         # Ищем первую подписку атлета на тренера

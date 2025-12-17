@@ -5,8 +5,8 @@ from .position import PositionSerializer
 from .run import RunSerializer
 from .user import (
     UserSerializer,
-    CouchAthleteSerializer,
-    CouchAthleteItemsSerializer,
+    CoachAthleteSerializer,
+    CoachAthleteItemsSerializer,
     AthleteInfoSerializer,
     AthleteWithCoachSerializer,
     CoachWithAthletesSerializer,
@@ -15,8 +15,8 @@ from .user import (
 # Указываем какие имена импортируем
 __all__ = [
     "UserSerializer",
-    "CouchAthleteSerializer",
-    "CouchAthleteItemsSerializer",
+    "CoachAthleteSerializer",
+    "CoachAthleteItemsSerializer",
     "AthleteInfoSerializer",
     "RunSerializer",
     "CollectibleItemSerializer",
