@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from app_run.models import Run
-from app_run.serializers import UserSerializer
+from app_run.serializers.user import UserSerializer
 
 
 class RunSerializer(serializers.ModelSerializer):
