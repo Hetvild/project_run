@@ -32,8 +32,8 @@ from app_run.views import (
     UploadFileAPIView,
     SubscribeAPIView,
     ChallengeSummaryViewSet,
+    RateCoachApiView,
 )
-from app_run.views.rating_views import RateCoachApiView
 
 router = routers.DefaultRouter()
 router.register("api/runs", RunViewSet)
