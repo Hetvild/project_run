@@ -33,6 +33,7 @@ from app_run.views import (
     SubscribeAPIView,
     ChallengeSummaryViewSet,
     RateCoachApiView,
+    AnalyticsForCoachAPIView,
 )
 
 router = routers.DefaultRouter()
@@ -52,6 +53,11 @@ urlpatterns = [
         "api/challenges_summary/",
         ChallengeSummaryViewSet.as_view(),
         name="challenges_summary",
+    ),
+    path(
+        "api/analytics_for_coach/<int:coach_id>/",
+        AnalyticsForCoachAPIView.as_view(),
+        name="analytics_for_coach",
     ),
     path(
         "api/rate_coach/<int:coach_id>/", RateCoachApiView.as_view(), name="rate_coach"

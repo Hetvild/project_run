@@ -6,7 +6,11 @@ from .position_views import PositionViewSet
 from .rating_views import RateCoachApiView
 from .run_views import RunViewSet, StopRunAPIView, StartRunAPIView
 from .subscription_views import SubscribeAPIView
-from .user_views import CouchAthleteViewSet, AthleteInfoAPIView
+from .user_views import (
+    CouchAthleteViewSet,
+    AthleteInfoAPIView,
+    AnalyticsForCoachAPIView,
+)
 
 __all__ = [
     "RunViewSet",
@@ -22,4 +26,5 @@ __all__ = [
     "company_details",
     "ChallengeSummaryViewSet",
     "RateCoachApiView",
+    "AnalyticsForCoachAPIView",
 ]

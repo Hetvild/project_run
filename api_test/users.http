@@ -12,4 +12,10 @@ GET http://127.0.0.1:8000/api/users/
 GET http://127.0.0.1:8000/api/users/
     ?search=Юля
 
+
+### GET запрос для поиска пользователя по полю search
+GET http://127.0.0.1:8000/api/analytics_for_coach/2/
+
+
 ###
+
