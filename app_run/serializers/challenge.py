@@ -16,4 +16,4 @@ class ChallengeSummarySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Challenge
-        fields = "full_name"
+        fields = "__all__"

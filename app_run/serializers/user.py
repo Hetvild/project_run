@@ -102,3 +102,15 @@ class AthleteInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = AthleteInfo
         fields = ("weight", "goals", "user_id")
+
+
+class AthleteSummarySerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ["id", "full_name", "username"]
+
+    def get_full_name(self, obj):
+        # Используем first_name и last_name из User
+        return f"{obj.first_name} {obj.last_name}".strip()
