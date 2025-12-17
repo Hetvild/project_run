@@ -7,6 +7,10 @@ from app_run.models import Subscribe, CoachRating
 
 
 class RateCoachApiView(APIView):
+    """
+    Представление для передачи рейтинга Тренера от Атлета
+    """
+
     def post(self, request, coach_id):
         # Получаем данные из тела запроса и проверяем что они не None
         # Получаем athlete_id из тела запроса
