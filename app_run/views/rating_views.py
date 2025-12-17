@@ -40,7 +40,7 @@ class RateCoachApiView(APIView):
 
         # Проверяет, что атлет подписан на этого тренера (через модель Subscribe)
         if not Subscribe.objects.filter(coach=coach, athlete=athlete).exists():
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         CoachRating.objects.update_or_create(
             coach=coach, athlete=athlete, defaults={"rating": rating}
