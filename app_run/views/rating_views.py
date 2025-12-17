@@ -12,6 +12,12 @@ class RateCoachApiView(APIView):
     """
 
     def post(self, request, coach_id):
+        # Получаем тренера из базы
+        try:
+            coach = User.objects.get(id=coach_id, is_staff=True)
+        except User.DoesNotExist as ex:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         # Получаем данные из тела запроса и проверяем что они не None
         # Получаем athlete_id из тела запроса
         athlete_id = request.data.get("athlete")
@@ -29,12 +35,6 @@ class RateCoachApiView(APIView):
         # Получаем атлета из базы
         try:
             athlete = User.objects.get(id=athlete_id, is_staff=False)
-        except User.DoesNotExist as ex:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        # Получаем тренера из базы
-        try:
-            coach = User.objects.get(id=coach_id, is_staff=True)
         except User.DoesNotExist as ex:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
